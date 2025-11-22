@@ -5,14 +5,18 @@ using LoneEftDmaRadar.Tarkov.GameWorld.Loot;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
+using System.Drawing;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LoneEftDmaRadar.UI.Skia;
 using LoneEftDmaRadar.UI.Misc;
-using SkiaSharp.Views.Desktop;
-using SkiaSharp.Views.WPF;
+using SharpDX;
+using SharpDX.Mathematics.Interop;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Forms.Integration;
 using WinForms = System.Windows.Forms;
+using DxColor = SharpDX.Mathematics.Interop.RawColorBGRA;
 
 namespace LoneEftDmaRadar.UI.ESP
 {
@@ -21,6 +25,7 @@ namespace LoneEftDmaRadar.UI.ESP
         #region Fields/Properties
 
         public static bool ShowESP { get; set; } = true;
+        private bool _dxInitFailed;
 
         private readonly System.Diagnostics.Stopwatch _fpsSw = new();
         private int _fpsCounter;
@@ -28,22 +33,15 @@ namespace LoneEftDmaRadar.UI.ESP
         private long _lastFrameTicks;
         private Timer _highFrequencyTimer;
 
-        // Render surfaces
-        private SKElement _skElement;
-        private WindowsFormsHost _glHost;
-        private SKGLControl _skGlControl;
-        private bool _usingGlSurface;
-        private bool _glInitFailed;
+        // Render surface
+        private Dx9OverlayControl _dxOverlay;
+        private WindowsFormsHost _dxHost;
         private bool _isClosing;
 
         // Cached Fonts/Paints
-        private readonly SKFont _textFont;
-        private readonly SKPaint _textPaint;
-        private readonly SKPaint _textBackgroundPaint;
         private readonly SKPaint _skeletonPaint;
         private readonly SKPaint _boxPaint;
         private readonly SKPaint _lootPaint;
-        private readonly SKFont _lootTextFont;
         private readonly SKPaint _lootTextPaint;
         private readonly SKPaint _crosshairPaint;
 
@@ -113,24 +111,6 @@ namespace LoneEftDmaRadar.UI.ESP
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             // Cache paints/fonts
-            _textFont = new SKFont
-            {
-                Size = 12,
-                Edging = SKFontEdging.Antialias
-            };
-
-            _textPaint = new SKPaint
-            {
-                Color = SKColors.White,
-                Style = SKPaintStyle.Fill
-            };
-
-            _textBackgroundPaint = new SKPaint
-            {
-                Color = new SKColor(0, 0, 0, 128),
-                Style = SKPaintStyle.Fill
-            };
-
             _skeletonPaint = new SKPaint
             {
                 Color = SKColors.White,
@@ -152,12 +132,6 @@ namespace LoneEftDmaRadar.UI.ESP
                 Color = SKColors.LightGray,
                 Style = SKPaintStyle.Fill,
                 IsAntialias = true
-            };
-
-            _lootTextFont = new SKFont
-            {
-                Size = 10,
-                Edging = SKFontEdging.Antialias
             };
 
              _lootTextPaint = new SKPaint
@@ -190,100 +164,24 @@ namespace LoneEftDmaRadar.UI.ESP
         {
             RenderRoot.Children.Clear();
 
-            if (App.Config.UI.EspUseOpenGl && !_glInitFailed && TryCreateGlSurface())
+            _dxOverlay = new Dx9OverlayControl
             {
-                _usingGlSurface = true;
-                return;
-            }
+                Dock = WinForms.DockStyle.Fill
+            };
 
-            CreateCpuSurface();
-            _usingGlSurface = false;
-        }
+            ApplyDxFontConfig();
+            _dxOverlay.RenderFrame = RenderSurface;
+            _dxOverlay.DeviceInitFailed += Overlay_DeviceInitFailed;
+            _dxOverlay.MouseDown += GlControl_MouseDown;
+            _dxOverlay.DoubleClick += GlControl_DoubleClick;
+            _dxOverlay.KeyDown += GlControl_KeyDown;
 
-        private bool TryCreateGlSurface()
-        {
-            try
+            _dxHost = new WindowsFormsHost
             {
-                _skGlControl = new SKGLControl
-                {
-                    Dock = WinForms.DockStyle.Fill,
-                    VSync = false,
-                    BackColor = System.Drawing.Color.Black,
-                    TabStop = false
-                };
+                Child = _dxOverlay
+            };
 
-                _skGlControl.PaintSurface += OnPaintSurfaceGl;
-                _skGlControl.MouseDown += GlControl_MouseDown;
-                _skGlControl.DoubleClick += GlControl_DoubleClick;
-                _skGlControl.KeyDown += GlControl_KeyDown;
-
-                _glHost = new WindowsFormsHost
-                {
-                    Child = _skGlControl
-                };
-
-                RenderRoot.Children.Add(_glHost);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                DebugLogger.LogInfo($"ESP: Falling back to CPU renderer: {ex.Message}");
-                FallbackToCpu("GL init failed", ex);
-                return false;
-            }
-        }
-
-        private void CreateCpuSurface()
-        {
-            _skElement = new SKElement();
-            _skElement.PaintSurface += OnPaintSurface;
-            RenderRoot.Children.Add(_skElement);
-        }
-
-        private void DisposeGlSurface()
-        {
-            if (_skGlControl is not null)
-            {
-                _skGlControl.PaintSurface -= OnPaintSurfaceGl;
-                _skGlControl.MouseDown -= GlControl_MouseDown;
-                _skGlControl.DoubleClick -= GlControl_DoubleClick;
-                _skGlControl.KeyDown -= GlControl_KeyDown;
-                _skGlControl.Dispose();
-                _skGlControl = null;
-            }
-
-            if (_glHost is not null)
-            {
-                RenderRoot.Children.Remove(_glHost);
-                _glHost.Dispose();
-                _glHost = null;
-            }
-
-            _usingGlSurface = false;
-        }
-
-        private void DisposeCpuSurface()
-        {
-            if (_skElement is not null)
-            {
-                _skElement.PaintSurface -= OnPaintSurface;
-                RenderRoot.Children.Remove(_skElement);
-                _skElement = null;
-            }
-        }
-
-        private void FallbackToCpu(string reason, Exception ex = null)
-        {
-            if (!_usingGlSurface && _skElement is not null)
-                return;
-
-            if (_isClosing)
-                return;
-
-            _glInitFailed = true;
-            DisposeGlSurface();
-            CreateCpuSurface();
-            DebugLogger.LogInfo($"ESP: Switched to CPU renderer ({reason}). {ex?.Message}");
+            RenderRoot.Children.Add(_dxHost);
         }
 
         private void HighFrequencyRenderCallback(object state)
@@ -312,14 +210,7 @@ namespace LoneEftDmaRadar.UI.ESP
                     // Must dispatch to UI thread for rendering
                     Dispatcher.BeginInvoke(new Action(() =>
                     {
-                        try
-                        {
-                            RefreshESP();
-                        }
-                        catch (Exception ex)
-                        {
-                            FallbackToCpu("GL refresh failed", ex);
-                        }
+                        RefreshESP();
                     }), System.Windows.Threading.DispatcherPriority.Render);
                 }
             }
@@ -350,44 +241,18 @@ namespace LoneEftDmaRadar.UI.ESP
         /// <summary>
         /// Main ESP Render Event.
         /// </summary>
-        private void OnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        private void RenderSurface(Dx9RenderContext ctx)
         {
-            RenderSurface(e.Surface.Canvas, e.Info.Width, e.Info.Height);
-        }
-
-        private void OnPaintSurfaceGl(object sender, SKPaintGLSurfaceEventArgs e)
-        {
-            try
-            {
-                var target = e.BackendRenderTarget;
-                if (target == null)
-                    return;
-
-                RenderSurface(e.Surface.Canvas, target.Width, target.Height);
-            }
-            catch (Exception ex)
-            {
-                // If GL render pipeline throws, fall back to CPU to avoid crashing the app.
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    FallbackToCpu("GL render failed", ex);
-                    RefreshESP();
-                }));
-            }
-        }
-
-        private void RenderSurface(SKCanvas canvas, int pixelWidth, int pixelHeight)
-        {
-            if (canvas is null || pixelWidth <= 0 || pixelHeight <= 0)
+            if (_dxInitFailed)
                 return;
 
-            float screenWidth = pixelWidth;
-            float screenHeight = pixelHeight;
+            float screenWidth = ctx.Width;
+            float screenHeight = ctx.Height;
 
             SetFPS();
 
             // Clear with black background (transparent for fuser)
-            canvas.Clear(SKColors.Black);
+            ctx.Clear(new DxColor(0, 0, 0, 255));
 
             try
             {
@@ -411,7 +276,7 @@ namespace LoneEftDmaRadar.UI.ESP
                 {
                     if (!ShowESP)
                     {
-                        DrawNotShown(canvas, screenWidth, screenHeight);
+                        DrawNotShown(ctx, screenWidth, screenHeight);
                     }
                     else
                     {
@@ -423,7 +288,7 @@ namespace LoneEftDmaRadar.UI.ESP
                         // Render Loot (background layer)
                         if (App.Config.Loot.Enabled && App.Config.UI.EspLoot)
                         {
-                            DrawLoot(canvas, screenWidth, screenHeight);
+                            DrawLoot(ctx, screenWidth, screenHeight);
                         }
 
                         // Render Exfils
@@ -442,8 +307,8 @@ namespace LoneEftDmaRadar.UI.ESP
                                              _ => SKPaints.PaintExfilOpen
                                          };
                                          
-                                         canvas.DrawCircle(screen, 4f, paint);
-                                         canvas.DrawText(exfil.Name, screen.X + 6, screen.Y + 4, _textFont, SKPaints.TextExfil);
+                                         ctx.DrawCircle(ToRaw(screen), 4f, ToColor(paint), true);
+                                         ctx.DrawText(exfil.Name, screen.X + 6, screen.Y + 4, ToColor(SKPaints.TextExfil), DxTextSize.Medium);
                                      }
                                 }
                             }
@@ -452,15 +317,15 @@ namespace LoneEftDmaRadar.UI.ESP
                         // Render players
                         foreach (var player in allPlayers)
                         {
-                            DrawPlayerESP(canvas, player, localPlayer, screenWidth, screenHeight);
+                            DrawPlayerESP(ctx, player, localPlayer, screenWidth, screenHeight);
                         }
 
                         if (App.Config.UI.EspCrosshair)
                         {
-                            DrawCrosshair(canvas, screenWidth, screenHeight);
+                            DrawCrosshair(ctx, screenWidth, screenHeight);
                         }
 
-                        DrawFPS(canvas, screenWidth, screenHeight);
+                        DrawFPS(ctx, screenWidth, screenHeight);
                     }
                 }
             }
@@ -470,13 +335,10 @@ namespace LoneEftDmaRadar.UI.ESP
             }
         }
 
-        private void DrawLoot(SKCanvas canvas, float screenWidth, float screenHeight)
+        private void DrawLoot(Dx9RenderContext ctx, float screenWidth, float screenHeight)
         {
             var lootItems = Memory.Game?.Loot?.FilteredLoot;
             if (lootItems is null) return;
-
-            // Use cached forward vector from TransposedViewMatrix
-            var forward = _transposedViewMatrix.Forward;
 
             foreach (var item in lootItems)
             {
@@ -571,16 +433,16 @@ namespace LoneEftDmaRadar.UI.ESP
                          textPaint = _lootTextPaint;
                      }
 
-                     canvas.DrawCircle(screen, 2f, circlePaint);
+                     ctx.DrawCircle(ToRaw(screen), 2f, ToColor(circlePaint), true);
 
                      if (item.Important || inCone)
                      {
                          var text = item.ShortName;
                          if (App.Config.UI.EspLootPrice)
                          {
-                             text = item.Important ? item.ShortName : $"{item.ShortName} ({Utilities.FormatNumberKM(item.Price)})";
+                             text = item.Important ? item.ShortName : $"{item.ShortName} ({LoneEftDmaRadar.Misc.Utilities.FormatNumberKM(item.Price)})";
                          }
-                         canvas.DrawText(text, screen.X + 4, screen.Y + 4, _lootTextFont, textPaint);
+                         ctx.DrawText(text, screen.X + 4, screen.Y + 4, ToColor(textPaint), DxTextSize.Small);
                      }
                 }
             }
@@ -590,7 +452,7 @@ namespace LoneEftDmaRadar.UI.ESP
         /// Renders player on ESP
         /// </summary>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private void DrawPlayerESP(SKCanvas canvas, AbstractPlayer player, LocalPlayer localPlayer, float screenWidth, float screenHeight)
+        private void DrawPlayerESP(Dx9RenderContext ctx, AbstractPlayer player, LocalPlayer localPlayer, float screenWidth, float screenHeight)
         {
             if (player is null || player == localPlayer || !player.IsAlive || !player.IsActive)
                 return;
@@ -611,10 +473,7 @@ namespace LoneEftDmaRadar.UI.ESP
                 return;
 
             // Get Color
-            var color = GetPlayerColor(player).Color;
-            _skeletonPaint.Color = color;
-            _boxPaint.Color = color;
-            _textPaint.Color = color;
+            var color = ToColor(GetPlayerColor(player));
 
             bool drawSkeleton = isAI ? App.Config.UI.EspAISkeletons : App.Config.UI.EspPlayerSkeletons;
             bool drawBox = isAI ? App.Config.UI.EspAIBoxes : App.Config.UI.EspPlayerBoxes;
@@ -623,22 +482,22 @@ namespace LoneEftDmaRadar.UI.ESP
             // Draw Skeleton
             if (drawSkeleton)
             {
-                DrawSkeleton(canvas, player, screenWidth, screenHeight);
+                DrawSkeleton(ctx, player, screenWidth, screenHeight, color, _skeletonPaint.StrokeWidth);
             }
             
             // Draw Box
             if (drawBox)
             {
-                DrawBoundingBox(canvas, player, screenWidth, screenHeight);
+                DrawBoundingBox(ctx, player, screenWidth, screenHeight, color, _boxPaint.StrokeWidth);
             }
 
             if (drawName && TryProject(player.GetBonePos(Bones.HumanHead), screenWidth, screenHeight, out var headScreen))
             {
-                DrawPlayerName(canvas, headScreen, player, distance);
+                DrawPlayerName(ctx, headScreen, player, distance, color);
             }
         }
 
-        private void DrawSkeleton(SKCanvas canvas, AbstractPlayer player, float w, float h)
+        private void DrawSkeleton(Dx9RenderContext ctx, AbstractPlayer player, float w, float h, DxColor color, float thickness)
         {
             foreach (var (from, to) in _boneConnections)
             {
@@ -647,12 +506,12 @@ namespace LoneEftDmaRadar.UI.ESP
 
                 if (TryProject(p1, w, h, out var s1) && TryProject(p2, w, h, out var s2))
                 {
-                    canvas.DrawLine(s1, s2, _skeletonPaint);
+                    ctx.DrawLine(ToRaw(s1), ToRaw(s2), color, thickness);
                 }
             }
         }
 
-        private void DrawBoundingBox(SKCanvas canvas, AbstractPlayer player, float w, float h)
+        private void DrawBoundingBox(Dx9RenderContext ctx, AbstractPlayer player, float w, float h, DxColor color, float thickness)
         {
             var projectedPoints = new List<SKPoint>();
 
@@ -688,8 +547,8 @@ namespace LoneEftDmaRadar.UI.ESP
             maxY = Math.Clamp(maxY, -50f, h + 50f);
 
             float padding = 2f;
-            var rect = new SKRect(minX - padding, minY - padding, maxX + padding, maxY + padding);
-            canvas.DrawRect(rect, _boxPaint);
+            var rect = new RectangleF(minX - padding, minY - padding, (maxX - minX) + padding * 2f, (maxY - minY) + padding * 2f);
+            ctx.DrawRect(rect, color, thickness);
         }
 
         /// <summary>
@@ -721,65 +580,76 @@ namespace LoneEftDmaRadar.UI.ESP
         /// Draws player name and distance
         /// </summary>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private void DrawPlayerName(SKCanvas canvas, SKPoint screenPos, AbstractPlayer player, float distance)
+        private void DrawPlayerName(Dx9RenderContext ctx, SKPoint screenPos, AbstractPlayer player, float distance, DxColor color)
         {
             var name = player.Name ?? "Unknown";
             var text = $"{name} ({distance:F0}m)";
-            
-            var textWidth = _textFont.MeasureText(text);
-            var textHeight = _textFont.Size;
-            
-            canvas.DrawText(text, screenPos.X - textWidth / 2, screenPos.Y - 20 + textHeight, _textFont, _textPaint);
+
+            ctx.DrawText(text, screenPos.X, screenPos.Y - 20, color, DxTextSize.Medium, centerX: true);
         }
 
         /// <summary>
         /// Draw 'ESP Hidden' notification.
         /// </summary>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private void DrawNotShown(SKCanvas canvas, float width, float height)
+        private void DrawNotShown(Dx9RenderContext ctx, float width, float height)
         {
-            using var textFont = new SKFont
-            {
-                Size = 24,
-                Edging = SKFontEdging.Antialias
-            };
-
-            using var textPaint = new SKPaint
-            {
-                Color = SKColors.White,
-                IsAntialias = true
-            };
-
-            var text = "ESP Hidden";
-            var x = width / 2;
-            var y = height / 2;
-            
-            canvas.DrawText(text, x, y, SKTextAlign.Center, textFont, textPaint);
+            ctx.DrawText("ESP Hidden", width / 2f, height / 2f, new DxColor(255, 255, 255, 255), DxTextSize.Large, centerX: true, centerY: true);
         }
 
-        private void DrawCrosshair(SKCanvas canvas, float width, float height)
+        private void DrawCrosshair(Dx9RenderContext ctx, float width, float height)
         {
             float centerX = width / 2f;
             float centerY = height / 2f;
             float length = MathF.Max(2f, App.Config.UI.EspCrosshairLength);
 
-            canvas.DrawLine(centerX - length, centerY, centerX + length, centerY, _crosshairPaint);
-            canvas.DrawLine(centerX, centerY - length, centerX, centerY + length, _crosshairPaint);
+            var color = ToColor(_crosshairPaint);
+            ctx.DrawLine(new RawVector2(centerX - length, centerY), new RawVector2(centerX + length, centerY), color, _crosshairPaint.StrokeWidth);
+            ctx.DrawLine(new RawVector2(centerX, centerY - length), new RawVector2(centerX, centerY + length), color, _crosshairPaint.StrokeWidth);
         }
 
-        private void DrawFPS(SKCanvas canvas, float width, float height)
+        private void DrawFPS(Dx9RenderContext ctx, float width, float height)
         {
             var fpsText = $"FPS: {_fps}";
-   
-            using var paint = new SKPaint
+            ctx.DrawText(fpsText, 10, 10, new DxColor(255, 255, 255, 255), DxTextSize.Small);
+        }
+
+        private static RawVector2 ToRaw(SKPoint point) => new(point.X, point.Y);
+
+        private static DxColor ToColor(SKPaint paint) => ToColor(paint.Color);
+
+        private static DxColor ToColor(SKColor color) => new(color.Blue, color.Green, color.Red, color.Alpha);
+
+        #endregion
+
+        private void ApplyDxFontConfig()
+        {
+            var ui = App.Config.UI;
+            _dxOverlay?.SetFontConfig(
+                ui.EspFontFamily,
+                ui.EspFontSizeSmall,
+                ui.EspFontSizeMedium,
+                ui.EspFontSizeLarge);
+        }
+
+        #region DX Init Handling
+
+        private void Overlay_DeviceInitFailed(Exception ex)
+        {
+            _dxInitFailed = true;
+            DebugLogger.LogDebug($"ESP DX init failed: {ex}");
+
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                Color = SKColors.White,
-                IsAntialias = true,
-                TextSize = 10,
-                Typeface = SKTypeface.FromFamilyName("Arial", SKFontStyle.Bold)
-            };
-            
-            canvas.DrawText(fpsText, 10, 25, paint);
+                RenderRoot.Children.Clear();
+                RenderRoot.Children.Add(new TextBlock
+                {
+                    Text = "DX overlay init failed. See log for details.",
+                    Foreground = System.Windows.Media.Brushes.White,
+                    Background = System.Windows.Media.Brushes.Black,
+                    Margin = new Thickness(12)
+                });
+            }), DispatcherPriority.Send);
         }
 
         #endregion
@@ -909,10 +779,11 @@ namespace LoneEftDmaRadar.UI.ESP
             try
             {
                 _highFrequencyTimer?.Dispose();
-                DisposeGlSurface();
-                DisposeCpuSurface();
-                _textPaint.Dispose();
-                _textBackgroundPaint.Dispose();
+                _dxOverlay?.Dispose();
+                _skeletonPaint.Dispose();
+                _boxPaint.Dispose();
+                _lootPaint.Dispose();
+                _lootTextPaint.Dispose();
                 _crosshairPaint.Dispose();
             }
             catch (Exception ex)
@@ -931,22 +802,7 @@ namespace LoneEftDmaRadar.UI.ESP
             if (_isClosing)
                 return;
 
-            if (_usingGlSurface && _skGlControl is not null)
-            {
-                try
-                {
-                    _skGlControl.Invalidate();
-                }
-                catch (Exception ex)
-                {
-                    FallbackToCpu("GL invalidate failed", ex);
-                    _skElement?.InvalidateVisual();
-                }
-            }
-            else
-            {
-                _skElement?.InvalidateVisual();
-            }
+            _dxOverlay?.Render();
         }
 
         private void Window_MouseDoubleClick(object sender, MouseButtonEventArgs e)

@@ -657,6 +657,30 @@ namespace LoneEftDmaRadar
         public float EspCrosshairLength { get; set; } = 25f;
 
         /// <summary>
+        /// Font family used for ESP text (DX overlay).
+        /// </summary>
+        [JsonPropertyName("espFontFamily")]
+        public string EspFontFamily { get; set; } = "Segoe UI";
+
+        /// <summary>
+        /// Small font size used for ESP text (loot labels, etc).
+        /// </summary>
+        [JsonPropertyName("espFontSizeSmall")]
+        public int EspFontSizeSmall { get; set; } = 10;
+
+        /// <summary>
+        /// Medium font size used for ESP text (player names, exfil labels).
+        /// </summary>
+        [JsonPropertyName("espFontSizeMedium")]
+        public int EspFontSizeMedium { get; set; } = 12;
+
+        /// <summary>
+        /// Large font size used for ESP text (status banners).
+        /// </summary>
+        [JsonPropertyName("espFontSizeLarge")]
+        public int EspFontSizeLarge { get; set; } = 24;
+
+        /// <summary>
         /// Use OpenGL-backed renderer for the ESP window (requires GPU support).
         /// </summary>
         [JsonPropertyName("espUseOpenGl")]
