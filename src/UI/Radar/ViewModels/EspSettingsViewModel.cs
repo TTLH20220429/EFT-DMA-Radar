@@ -747,6 +747,7 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
                 if (App.Config.UI.EspTargetScreen != value)
                 {
                     App.Config.UI.EspTargetScreen = value;
+                    ESPManager.ApplyResolutionOverride();
                     OnPropertyChanged();
                 }
             }
