@@ -81,6 +81,8 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Explosives
         private readonly Vector3 _position;
         public ref readonly Vector3 Position => ref _position;
 
+        public bool IsActive => !_destroyed && _isActive;
+
         public void Draw(SKCanvas canvas, EftMapParams mapParams, LocalPlayer localPlayer)
         {
             if (!_isActive)

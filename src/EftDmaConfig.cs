@@ -662,6 +662,9 @@ namespace LoneEftDmaRadar
         [JsonPropertyName("espExfils")]
         public bool EspExfils { get; set; } = true;
 
+        [JsonPropertyName("espTripwires")]
+        public bool EspTripwires { get; set; } = true;
+
         /// <summary>
         /// Show Loot on ESP.
         /// </summary>
@@ -788,6 +791,9 @@ namespace LoneEftDmaRadar
 
         [JsonPropertyName("espColorExfil")]
         public string EspColorExfil { get; set; } = "#FF7FFFD4";
+
+        [JsonPropertyName("espColorTripwire")]
+        public string EspColorTripwire { get; set; } = "#FFFF4500";
 
         [JsonPropertyName("espColorCrosshair")]
         public string EspColorCrosshair { get; set; } = "#FFFFFFFF";

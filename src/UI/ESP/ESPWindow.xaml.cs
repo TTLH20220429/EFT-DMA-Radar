@@ -1,6 +1,7 @@
 using LoneEftDmaRadar.Misc;
 using LoneEftDmaRadar.Tarkov.GameWorld;
 using LoneEftDmaRadar.Tarkov.GameWorld.Exits;
+using LoneEftDmaRadar.Tarkov.GameWorld.Explosives;
 using LoneEftDmaRadar.Tarkov.GameWorld.Loot;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers;
@@ -74,6 +75,8 @@ namespace LoneEftDmaRadar.UI.ESP
         private static IReadOnlyCollection<AbstractPlayer> AllPlayers => Memory.Players;
 
         private static IReadOnlyCollection<IExitPoint> Exits => Memory.Exits;
+
+        private static IReadOnlyCollection<IExplosiveItem> Explosives => Memory.Explosives;
 
         private static bool InRaid => Memory.InRaid;
 
@@ -306,6 +309,11 @@ namespace LoneEftDmaRadar.UI.ESP
                             }
                         }
 
+                        if (Explosives is not null && App.Config.UI.EspTripwires)
+                        {
+                            DrawTripwires(ctx, screenWidth, screenHeight);
+                        }
+
                         // Render players
                         foreach (var player in allPlayers)
                         {
@@ -467,6 +475,22 @@ namespace LoneEftDmaRadar.UI.ESP
                          ctx.DrawText(text, screen.X + 4, screen.Y + 4, textColor, DxTextSize.Small);
                     }
                 }
+            }
+        }
+
+        private void DrawTripwires(Dx9RenderContext ctx, float screenWidth, float screenHeight)
+        {
+            foreach (var explosive in Explosives)
+            {
+                if (explosive is not Tripwire tripwire || !tripwire.IsActive)
+                    continue;
+
+                if (!WorldToScreen2(tripwire.Position, out var screen, screenWidth, screenHeight))
+                    continue;
+
+                var color = GetTripwireColorForRender();
+                ctx.DrawCircle(ToRaw(screen), 5f, color, true);
+                ctx.DrawText("Tripwire", screen.X + 6, screen.Y, color, DxTextSize.Small);
             }
         }
 
@@ -904,6 +928,7 @@ namespace LoneEftDmaRadar.UI.ESP
 
         private DxColor GetLootColorForRender() => ToColor(ColorFromHex(App.Config.UI.EspColorLoot));
         private DxColor GetExfilColorForRender() => ToColor(ColorFromHex(App.Config.UI.EspColorExfil));
+        private DxColor GetTripwireColorForRender() => ToColor(ColorFromHex(App.Config.UI.EspColorTripwire));
         private DxColor GetCrosshairColor() => ToColor(ColorFromHex(App.Config.UI.EspColorCrosshair));
 
         private static SKColor ColorFromHex(string hex)

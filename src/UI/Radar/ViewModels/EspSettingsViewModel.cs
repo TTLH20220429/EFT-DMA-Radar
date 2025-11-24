@@ -409,6 +409,19 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
             }
         }
 
+        public bool EspTripwires
+        {
+            get => App.Config.UI.EspTripwires;
+            set
+            {
+                if (App.Config.UI.EspTripwires != value)
+                {
+                    App.Config.UI.EspTripwires = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         public Array LabelPositions { get; } = Enum.GetValues(typeof(EspLabelPosition));
 
         public EspLabelPosition EspLabelPosition
@@ -524,6 +537,12 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
         {
             get => App.Config.UI.EspColorExfil;
             set { App.Config.UI.EspColorExfil = value; OnPropertyChanged(); }
+        }
+
+        public string EspColorTripwire
+        {
+            get => App.Config.UI.EspColorTripwire;
+            set { App.Config.UI.EspColorTripwire = value; OnPropertyChanged(); }
         }
 
         public string EspColorCrosshair
