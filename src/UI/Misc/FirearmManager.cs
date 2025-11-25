@@ -8,7 +8,7 @@ using System.Linq;
 using LoneEftDmaRadar.DMA;
 using LoneEftDmaRadar.Tarkov;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
-using LoneEftDmaRadar.Tarkov.Mono.Collections;
+using LoneEftDmaRadar.Tarkov.Unity.Collections;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
 using LoneEftDmaRadar.Web.TarkovDev.Data;
 
@@ -190,15 +190,15 @@ namespace LoneEftDmaRadar.UI.Misc
             {
                 var chambersPtr = MemoryInterface.Memory.ReadValue<ulong>(lootItemBase + Offsets.LootItemWeapon.Chambers, false);
                 ulong firstRound = 0;
-                MonoArray<Chamber> chambers = null;
-                MonoArray<Chamber> magChambers = null;
-                MonoList<ulong> magStack = null;
+                UnityArray<Chamber> chambers = null;
+                UnityArray<Chamber> magChambers = null;
+                UnityList<ulong> magStack = null;
 
                 try
                 {
                     if (chambersPtr != 0x0)
                     {
-                        chambers = MonoArray<Chamber>.Create(chambersPtr, true);
+                        chambers = UnityArray<Chamber>.Create(chambersPtr, true);
                         if (chambers.Count > 0)
                         {
                             var chamberWithBullet = chambers.Span.ToArray().FirstOrDefault(x => x.HasBullet(true));
@@ -214,8 +214,8 @@ namespace LoneEftDmaRadar.UI.Misc
                     var magSlot = MemoryInterface.Memory.ReadPtr(lootItemBase + Offsets.LootItemWeapon._magSlotCache, false);
                     var magItemPtr = MemoryInterface.Memory.ReadPtr(magSlot + Offsets.Slot.ContainedItem, false);
                     var magChambersPtr = MemoryInterface.Memory.ReadPtr(magItemPtr + Offsets.LootItemMod.Slots, false);
-                    
-                    magChambers = MonoArray<Chamber>.Create(magChambersPtr, true);
+
+                    magChambers = UnityArray<Chamber>.Create(magChambersPtr, true);
                     
                     if (magChambers.Count > 0) // Revolvers, etc.
                     {
@@ -229,7 +229,7 @@ namespace LoneEftDmaRadar.UI.Misc
                     {
                         var cartridges = MemoryInterface.Memory.ReadPtr(magItemPtr + Offsets.LootItemMagazine.Cartridges, false);
                         var magStackPtr = MemoryInterface.Memory.ReadPtr(cartridges + Offsets.StackSlot._items, false);
-                        magStack = MonoList<ulong>.Create(magStackPtr, true);
+                        magStack = UnityList<ulong>.Create(magStackPtr, true);
                         if (magStack.Count > 0)
                             firstRound = magStack.Span[0];
                     }

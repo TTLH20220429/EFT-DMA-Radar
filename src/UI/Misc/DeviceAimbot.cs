@@ -13,7 +13,7 @@ using LoneEftDmaRadar.DMA;
 using LoneEftDmaRadar.Tarkov.GameWorld;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers;
-using LoneEftDmaRadar.Tarkov.Mono.Collections;
+using LoneEftDmaRadar.Tarkov.Unity.Collections;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
 using LoneEftDmaRadar.UI.Misc.Ballistics;
 using SkiaSharp;
@@ -804,7 +804,7 @@ private static float RadToDeg(float radians)
             try
             {
                 var slotsPtr = _memory.ReadPtr(itemBase + Offsets.LootItemMod.Slots, false);
-                using var slots = MonoArray<ulong>.Create(slotsPtr, true);
+                using var slots = UnityArray<ulong>.Create(slotsPtr, true);
 
                 if (slots.Count > 100) // Sanity check
                     return;

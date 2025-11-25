@@ -5,7 +5,7 @@
 
 using LoneEftDmaRadar.DMA;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
-using LoneEftDmaRadar.Tarkov.Mono.Collections;
+using LoneEftDmaRadar.Tarkov.Unity.Collections;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -255,16 +255,16 @@ namespace LoneEftDmaRadar.Tarkov.Features.MemWrites
             }
         }
 
-        private static MonoDictionary<byte, ulong> GetStatesDict(LocalPlayer localPlayer)
+        private static UnityDictionary<byte, ulong> GetStatesDict(LocalPlayer localPlayer)
         {
             var statesPtr = Memory.ReadPtr(localPlayer.MovementContext + Offsets.MovementContext._states, false);
-            return MonoDictionary<byte, ulong>.Create(statesPtr, false);
+            return UnityDictionary<byte, ulong>.Create(statesPtr, false);
         }
 
         private static ulong GetOriginalStateContainer(LocalPlayer localPlayer)
         {
             var movementStatesPtr = Memory.ReadPtr(localPlayer.MovementContext + Offsets.MovementContext._movementStates, false);
-            using var movementStates = MonoArray<ulong>.Create(movementStatesPtr, false);
+            using var movementStates = UnityArray<ulong>.Create(movementStatesPtr, false);
 
             return movementStates.First(x =>
                 Memory.ReadValue<byte>(x + Offsets.PlayerStateContainer.Name, false) ==

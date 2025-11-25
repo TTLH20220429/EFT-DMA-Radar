@@ -26,7 +26,7 @@ SOFTWARE.
  *
 */
 
-using LoneEftDmaRadar.Tarkov.Mono.Collections;
+using LoneEftDmaRadar.Tarkov.Unity.Collections;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
 
 namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
@@ -192,10 +192,10 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
 
             foreach (var bone in bonesToRegister)
             {
-                try 
+                try
                 {
                     var chain = _transformInternalChain.ToArray();
-                    chain[chain.Length - 2] = MonoList<byte>.ArrStartOffset + (uint)bone * 0x8;
+                    chain[chain.Length - 2] = UnityList<byte>.ArrStartOffset + (uint)bone * 0x8;
                     
                     var ti = Memory.ReadPtrChain(this, false, chain);
                     var transform = new UnityTransform(ti);
@@ -245,8 +245,8 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
             Offsets.Player._playerBody,
             Offsets.PlayerBody.SkeletonRootJoint,
             Offsets.DizSkinningSkeleton._values,
-            MonoList<byte>.ArrOffset,
-            MonoList<byte>.ArrStartOffset + (uint)Bones.HumanBase * 0x8,
+            UnityList<byte>.ArrOffset,
+            UnityList<byte>.ArrStartOffset + (uint)Bones.HumanBase * 0x8,
             0x10
         ];
     }
