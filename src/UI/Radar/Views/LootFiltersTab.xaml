@@ -53,8 +53,16 @@
             <Button Content="重命名"
                     Command="{Binding RenameFilterCommand}"
                     Margin="0,0,5,0" />
+
             <Button Content="删除"
-                    Command="{Binding DeleteFilterCommand}" />
+                    Command="{Binding DeleteFilterCommand}"
+                    Margin="0,0,10,0" />
+            <TextBlock Text="Color:"
+                       VerticalAlignment="Center"
+                       Margin="0,0,5,0" />
+            <xctk:ColorPicker SelectedColor="{Binding CurrentFilterColor, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
+                              DisplayColorAndName="True"
+                              Width="150" />
         </StackPanel>
 
         <!-- 第1行：添加新条目 -->

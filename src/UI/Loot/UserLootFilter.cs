@@ -26,6 +26,7 @@ SOFTWARE.
  *
 */
 
+using SkiaSharp;
 using System.Collections.ObjectModel;
 
 namespace LoneEftDmaRadar.UI.Loot
@@ -33,6 +34,8 @@ namespace LoneEftDmaRadar.UI.Loot
     public sealed class UserLootFilter
     {
         [JsonPropertyName("enabled")] public bool Enabled { get; set; } = true;
+
+        [JsonPropertyName("color")] public string Color { get; set; } = SKColors.Turquoise.ToString();
 
         [JsonInclude]
         [JsonPropertyName("entries")]
