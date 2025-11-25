@@ -92,6 +92,20 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
             }
         }
 
+        private string _currentFilterColor;
+        public string CurrentFilterColor
+        {
+            get => _currentFilterColor;
+            set
+            {
+                if (_currentFilterColor == value) return;
+                _currentFilterColor = value;
+                // persist to config
+                App.Config.LootFilters.Filters[SelectedFilterName].Color = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<string> FilterNames { get; } // ComboBox of filter names
         private string _selectedFilterName;
         public string SelectedFilterName
@@ -104,7 +118,11 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
                 App.Config.LootFilters.Selected = value;
                 var userFilter = App.Config.LootFilters.Filters[value];
                 CurrentFilterEnabled = userFilter.Enabled;
+                CurrentFilterColor = userFilter.Color;
                 Entries = userFilter.Entries;
+                // Assign parent filter reference to each entry
+                foreach (var entry in userFilter.Entries)
+                    entry.ParentFilter = userFilter;
                 OnPropertyChanged();
             }
         }
@@ -285,10 +303,11 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
         {
             if (SelectedItemToAdd == null) return;
 
+            var userFilter = App.Config.LootFilters.Filters[SelectedFilterName];
             var entry = new LootFilterEntry
             {
                 ItemID = SelectedItemToAdd.BsgId,
-                Color = SKColors.Turquoise.ToString()
+                ParentFilter = userFilter
             };
 
             Entries.Add(entry);

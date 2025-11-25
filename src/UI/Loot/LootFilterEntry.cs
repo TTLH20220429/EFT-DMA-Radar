@@ -106,15 +106,53 @@ namespace LoneEftDmaRadar.UI.Loot
             set { if (_comment != value) { _comment = value; OnPropertyChanged(); } }
         }
 
-        private string _color = SKColors.Turquoise.ToString();
+        private string? _color = null;
         /// <summary>
         /// Hex value of the rgba color.
         /// </summary>
         [JsonPropertyName("color")]
         public string Color
         {
+            get
+            {
+                // If transparent or null, inherit from parent filter
+                if (string.IsNullOrEmpty(_color) || SKColor.TryParse(_color, out var parsed) && parsed.Alpha == 0)
+                    return ParentFilter?.Color ?? SKColors.Turquoise.ToString();
+                return _color;
+            }
+            set
+            {
+                if (_color != value)
+                {
+                    _color = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(ExplicitColor));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reference to parent UserLootFilter (not serialized).
+        /// </summary>
+        [JsonIgnore]
+        public UserLootFilter? ParentFilter { get; set; }
+
+        /// <summary>
+        /// For UI display: shows the explicit color or null if inheriting.
+        /// </summary>
+        [JsonIgnore]
+        public string? ExplicitColor
+        {
             get => _color;
-            set { if (_color != value) { _color = value; OnPropertyChanged(); } }
+            set
+            {
+                if (_color != value)
+                {
+                    _color = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Color));
+                }
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
