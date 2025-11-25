@@ -296,19 +296,17 @@ namespace LoneEftDmaRadar.UI.ESP
                         {
                             foreach (var exit in Exits)
                             {
-                                if (exit is Exfil exfil && exfil.Status != Exfil.EStatus.Closed)
+                                if (exit is Exfil exfil && (exfil.Status == Exfil.EStatus.Open || exfil.Status == Exfil.EStatus.Pending))
                                 {
                                      if (WorldToScreen2(exfil.Position, out var screen, screenWidth, screenHeight))
                                      {
-                                         var paint = exfil.Status switch
-                                         {
-                                             Exfil.EStatus.Open => SKPaints.PaintExfilOpen,
-                                             Exfil.EStatus.Pending => SKPaints.PaintExfilPending,
-                                             _ => SKPaints.PaintExfilOpen
-                                         };
-                                         
-                                         ctx.DrawCircle(ToRaw(screen), 4f, GetExfilColorForRender(), true);
-                                         ctx.DrawText(exfil.Name, screen.X + 6, screen.Y + 4, GetExfilColorForRender(), DxTextSize.Medium);
+                                         var dotColor = exfil.Status == Exfil.EStatus.Pending
+                                             ? ToColor(SKPaints.PaintExfilPending)
+                                             : ToColor(SKPaints.PaintExfilOpen);
+                                         var textColor = GetExfilColorForRender();
+
+                                         ctx.DrawCircle(ToRaw(screen), 4f, dotColor, true);
+                                         ctx.DrawText(exfil.Name, screen.X + 6, screen.Y + 4, textColor, DxTextSize.Medium);
                                      }
                                 }
                             }
