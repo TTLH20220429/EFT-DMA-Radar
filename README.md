@@ -1,3 +1,5 @@
+汉化支持
+
 # Moulman's EFT DMA Radar
 
 Fork of [Lone EFT DMA Radar](https://github.com/lone-dma/Lone-EFT-DMA-Radar) with additional ESP, aimbot, and memory-write features.
