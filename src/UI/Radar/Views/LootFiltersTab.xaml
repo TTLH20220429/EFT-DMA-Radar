@@ -12,13 +12,13 @@
              d:DesignHeight="450"
              d:DesignWidth="800">
 
-    <!-- design‐time DataContext -->
+    <!-- 设计时数据上下文 -->
     <d:UserControl.DataContext>
         <d:DesignInstance Type="{x:Type vm:LootFiltersViewModel}"
                           IsDesignTimeCreatable="False" />
     </d:UserControl.DataContext>
 
-    <!-- converters for hex‐string ↔ Brush/Color -->
+    <!-- 十六进制字符串 ↔ 画笔/颜色 转换器 -->
     <UserControl.Resources>
         <misc:StringToBrushConverter x:Key="StringToBrushConverter" />
         <misc:StringToColorConverter x:Key="StringToColorConverter" />
@@ -27,18 +27,18 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <!-- filter selector -->
+            <!-- 过滤器选择器 -->
             <RowDefinition Height="Auto" />
-            <!-- add‐entry row -->
+            <!-- 添加条目行 -->
             <RowDefinition Height="*" />
-            <!-- main grid -->
+            <!-- 主网格 -->
         </Grid.RowDefinitions>
 
-        <!-- Row 0: Filter selector -->
+        <!-- 第0行：过滤器选择器 -->
         <StackPanel Orientation="Horizontal"
                     Margin="5"
                     Grid.Row="0">
-            <CheckBox Content="Enabled"
+            <CheckBox Content="启用"
                       IsChecked="{Binding CurrentFilterEnabled, Mode=TwoWay}"
                       VerticalAlignment="Center"
                       Margin="0,0,10,0" />
@@ -47,17 +47,17 @@
                       SelectedItem="{Binding SelectedFilterName, Mode=TwoWay}"
                       Width="150"
                       Margin="0,0,10,0" />
-            <Button Content="Add"
+            <Button Content="新增"
                     Command="{Binding AddFilterCommand}"
                     Margin="0,0,5,0" />
-            <Button Content="Rename"
+            <Button Content="重命名"
                     Command="{Binding RenameFilterCommand}"
                     Margin="0,0,5,0" />
-            <Button Content="Delete"
+            <Button Content="删除"
                     Command="{Binding DeleteFilterCommand}" />
         </StackPanel>
 
-        <!-- Row 1: Add new entry -->
+        <!-- 第1行：添加新条目 -->
         <StackPanel Orientation="Horizontal"
                     Margin="5"
                     Grid.Row="1">
@@ -78,12 +78,12 @@
                      Width="200"
                      Margin="0,0,10,0"
                      VerticalAlignment="Center" />
-            <Button Content="Add"
+            <Button Content="添加"
                     Command="{Binding AddEntryCommand}"
                     VerticalAlignment="Center" />
         </StackPanel>
 
-        <!-- Row 2: Entries grid with inline color‐picker -->
+        <!-- 第2行：带内置颜色选择器的条目网格 -->
         <DataGrid ItemsSource="{Binding Entries}"
                   AutoGenerateColumns="False"
                   Grid.Row="2"
@@ -95,26 +95,26 @@
                   VirtualizingStackPanel.VirtualizationMode="Recycling">
 
             <DataGrid.Columns>
-                <DataGridCheckBoxColumn Header="Enabled"
+                <DataGridCheckBoxColumn Header="启用"
                                         Binding="{Binding Enabled, Mode=TwoWay}" />
 
-                <DataGridTextColumn Header="Item ID"
+                <DataGridTextColumn Header="物品ID"
                                     Binding="{Binding ItemID, Mode=TwoWay}" />
 
-                <DataGridTextColumn Header="Item Name"
+                <DataGridTextColumn Header="物品名称"
                                     Binding="{Binding Name}"
                                     IsReadOnly="True" />
 
-                <DataGridTemplateColumn Header="Type"
+                <DataGridTemplateColumn Header="类型"
                                         Width="150">
-                    <!-- display current enum name -->
+                    <!-- 显示当前枚举名称 -->
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Type}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
 
-                    <!-- put a real ComboBox in the editing template -->
+                    <!-- 在编辑模板中使用下拉框 -->
                     <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding DataContext.FilterEntryTypes,
@@ -125,11 +125,11 @@
                     </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="Comment"
+                <DataGridTextColumn Header="备注"
                                     Binding="{Binding Comment, Mode=TwoWay}" />
 
-                <!-- Color column: swatch and in‑cell Xceed ColorPicker -->
-                <DataGridTemplateColumn Header="Color">
+                <!-- 颜色列：颜色样本和内置Xceed颜色选择器 -->
+                <DataGridTemplateColumn Header="颜色">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Border Width="16"

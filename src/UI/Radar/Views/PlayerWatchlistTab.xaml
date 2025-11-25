@@ -26,11 +26,11 @@
                   VirtualizingStackPanel.VirtualizationMode="Recycling">
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Account ID"
+                <DataGridTextColumn Header="账号ID"
                                     Binding="{Binding AcctID, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <DataGridTextColumn Header="Reason"
+                <DataGridTextColumn Header="添加原因"
                                     Binding="{Binding Reason, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <DataGridTextColumn Header="Timestamp"
+                <DataGridTextColumn Header="添加时间"
                                     Binding="{Binding Timestamp, StringFormat={}{0:g}}"
                                     IsReadOnly="True" />
             </DataGrid.Columns>

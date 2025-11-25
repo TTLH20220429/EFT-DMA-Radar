@@ -23,59 +23,59 @@
         <StackPanel Orientation="Vertical"
                     Margin="0,0,0,10">
 
-            <!-- General Settings -->
-            <GroupBox Header="ESP Fuser General Settings"
+            <!-- 通用设置 -->
+            <GroupBox Header="ESP 融合器通用设置"
                       Margin="0,0,0,12">
                 <StackPanel>
                     <WrapPanel>
-                        <Button Content="Start Fuser"
+                        <Button Content="启动融合器"
                                 Command="{Binding StartEspCommand}"
                                 Width="120"
                                 Height="32"
                                 Margin="0,0,16,8"
-                                ToolTip="Opens the ESP Window in Fullscreen Mode."/>
+                                ToolTip="以全屏模式打开ESP窗口。"/>
                     </WrapPanel>
 
                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="Target Screen:" VerticalAlignment="Center" Margin="0,0,8,0" Width="100"/>
+                        <TextBlock Text="目标屏幕：" VerticalAlignment="Center" Margin="0,0,8,0" Width="100"/>
                         <ComboBox Width="300"
                                   ItemsSource="{Binding AvailableScreens}"
                                   SelectedValue="{Binding EspTargetScreen, Mode=TwoWay}"
                                   SelectedValuePath="Index"
                                   DisplayMemberPath="DisplayName"
-                                  ToolTip="Select which monitor to display the ESP window on when using Start Fuser"/>
+                                  ToolTip="使用启动融合器时，选择显示ESP窗口的显示器"/>
                     </WrapPanel>
 
                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="Resolution Override (0 = Auto): " VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBox Width="50" Text="{Binding EspScreenWidth, Mode=TwoWay}" Margin="0,0,8,0" ToolTip="Width (e.g. 1920)"/>
-                        <TextBlock Text="x" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBox Width="50" Text="{Binding EspScreenHeight, Mode=TwoWay}" Margin="0,0,16,0" ToolTip="Height (e.g. 1080)"/>
+                        <TextBlock Text="分辨率覆盖（0 = 自动）：" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Width="50" Text="{Binding EspScreenWidth, Mode=TwoWay}" Margin="0,0,8,0" ToolTip="宽度（例如：1920）"/>
+                        <TextBlock Text="×" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Width="50" Text="{Binding EspScreenHeight, Mode=TwoWay}" Margin="0,0,16,0" ToolTip="高度（例如：1080）"/>
                     </WrapPanel>
 
-                    <GroupBox Header="Text Style" Margin="0,8,0,0">
+                    <GroupBox Header="文本样式" Margin="0,8,0,0">
                         <StackPanel>
                             <WrapPanel Margin="0,4,0,0">
-                                <TextBlock Text="Font Family:" VerticalAlignment="Center" Width="90"/>
+                                <TextBlock Text="字体家族：" VerticalAlignment="Center" Width="90"/>
                                 <TextBox Width="180"
                                          Text="{Binding EspFontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="Use any installed font family name (e.g. Segoe UI, Arial, Consolas)"/>
+                                         ToolTip="使用任何已安装的字体家族名称（例如：微软雅黑、宋体、Consolas）"/>
                             </WrapPanel>
                             <WrapPanel Margin="0,4,0,0">
-                                <TextBlock Text="Sizes (S/M/L):" VerticalAlignment="Center" Width="90"/>
+                                <TextBlock Text="字体大小（小/中/大）：" VerticalAlignment="Center" Width="90"/>
                                 <TextBox Width="50"
                                          Text="{Binding EspFontSizeSmall, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="Small text size (loot labels)"/>
+                                         ToolTip="小文本大小（战利品标签）"/>
                                 <TextBlock Text="/" VerticalAlignment="Center" Margin="6,0"/>
                                 <TextBox Width="50"
                                          Text="{Binding EspFontSizeMedium, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="Medium text size (names, exfils)"/>
+                                         ToolTip="中文本大小（名称、撤离点）"/>
                                 <TextBlock Text="/" VerticalAlignment="Center" Margin="6,0"/>
                                 <TextBox Width="50"
                                          Text="{Binding EspFontSizeLarge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="Large text size (status text)"/>
+                                         ToolTip="大文本大小（状态文本）"/>
                             </WrapPanel>
-                            <TextBlock Text="Changes apply instantly to the ESP overlay"
+                            <TextBlock Text="更改会立即应用到ESP覆盖层"
                                        Foreground="Gray"
                                        FontSize="10"
                                        Margin="0,4,0,0"/>
@@ -84,22 +84,22 @@
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Player ESP" Margin="0,0,0,12">
+            <GroupBox Header="玩家ESP" Margin="0,0,0,12">
                 <StackPanel>
                     <WrapPanel>
-                        <CheckBox Content="Box" IsChecked="{Binding EspPlayerBoxes, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Skeleton" IsChecked="{Binding EspPlayerSkeletons, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Names" IsChecked="{Binding EspPlayerNames, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Group IDs" IsChecked="{Binding EspGroupIds, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Group Colors" IsChecked="{Binding EspGroupColors, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Faction Text" IsChecked="{Binding EspPlayerFaction, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Faction Color" IsChecked="{Binding EspFactionColors, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Health Status" IsChecked="{Binding EspPlayerHealth, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Distance" IsChecked="{Binding EspPlayerDistance, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Head Circle" IsChecked="{Binding EspHeadCirclePlayers, Mode=TwoWay}" Margin="0,0,16,8" />
-                     </WrapPanel>
-                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="Max Distance (0 = Unlimited):" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <CheckBox Content="方框" IsChecked="{Binding EspPlayerBoxes, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="骨骼" IsChecked="{Binding EspPlayerSkeletons, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="名称" IsChecked="{Binding EspPlayerNames, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="队伍ID" IsChecked="{Binding EspGroupIds, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="队伍颜色" IsChecked="{Binding EspGroupColors, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="阵营文本" IsChecked="{Binding EspPlayerFaction, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="阵营颜色" IsChecked="{Binding EspFactionColors, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="生命值状态" IsChecked="{Binding EspPlayerHealth, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="距离" IsChecked="{Binding EspPlayerDistance, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="头部圆圈" IsChecked="{Binding EspHeadCirclePlayers, Mode=TwoWay}" Margin="0,0,16,8" />
+                    </WrapPanel>
+                    <WrapPanel Margin="0,4,0,0">
+                        <TextBlock Text="最大距离（0 = 无限制）：" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <Slider x:Name="PlayerDistanceSlider"
                                 Width="200"
                                 Margin="0,0,8,0"
@@ -108,30 +108,30 @@
                                 SmallChange="10"
                                 LargeChange="50"
                                 Value="{Binding EspPlayerMaxDistance, Mode=TwoWay}"/>
-                        <TextBlock Text="{Binding Value, ElementName=PlayerDistanceSlider, StringFormat='{}{0:F0}m'}"
+                        <TextBlock Text="{Binding Value, ElementName=PlayerDistanceSlider, StringFormat='{}{0:F0}米'}"
                                    VerticalAlignment="Center"
                                    MinWidth="50"/>
                     </WrapPanel>
                     <WrapPanel Margin="0,8,0,0">
-                        <TextBlock Text="Label Position (Players):" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="标签位置（玩家）：" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <ComboBox Width="140"
                                   ItemsSource="{Binding LabelPositions}"
                                   SelectedItem="{Binding EspLabelPosition, Mode=TwoWay}"
-                                  ToolTip="Choose where the player label is drawn relative to the bounding box."/>
+                                  ToolTip="选择玩家标签相对于边界框的绘制位置。"/>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorPlayers, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,4,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="BEAR Faction:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="BEAR阵营：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorFactionBear, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
-                            <TextBlock Text="USEC:" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                            <TextBlock Text="USEC阵营：" VerticalAlignment="Center" Margin="10,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorFactionUsec, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
@@ -140,54 +140,54 @@
                     </WrapPanel>
                 </StackPanel>
             </GroupBox>
-            
-            <GroupBox Header="AI ESP" Margin="0,0,0,12">
+
+            <GroupBox Header="AIESP" Margin="0,0,0,12">
                 <StackPanel>
                     <WrapPanel>
-                        <CheckBox Content="Box" IsChecked="{Binding EspAIBoxes, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Skeleton" IsChecked="{Binding EspAISkeletons, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Names" IsChecked="{Binding EspAINames, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Health Status" IsChecked="{Binding EspAIHealth, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Distance" IsChecked="{Binding EspAIDistance, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Head Circle" IsChecked="{Binding EspHeadCircleAI, Mode=TwoWay}" Margin="0,0,16,8" />
-                     </WrapPanel>
+                        <CheckBox Content="方框" IsChecked="{Binding EspAIBoxes, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="骨骼" IsChecked="{Binding EspAISkeletons, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="名称" IsChecked="{Binding EspAINames, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="生命值状态" IsChecked="{Binding EspAIHealth, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="距离" IsChecked="{Binding EspAIDistance, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="头部圆圈" IsChecked="{Binding EspHeadCircleAI, Mode=TwoWay}" Margin="0,0,16,8" />
+                    </WrapPanel>
                     <WrapPanel Margin="0,8,0,0">
-                        <TextBlock Text="Label Position (AI/Scav):" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="标签位置（AI/拾荒者）：" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <ComboBox Width="140"
                                   ItemsSource="{Binding LabelPositions}"
                                   SelectedItem="{Binding EspLabelPositionAI, Mode=TwoWay}"
-                                  ToolTip="Choose where the AI/scav label is drawn relative to the bounding box."/>
+                                  ToolTip="选择AI/拾荒者标签相对于边界框的绘制位置。"/>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="AI/Scav Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="AI/拾荒者颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorAI, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Player Scav Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="玩家拾荒者颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorPlayerScavs, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Raider Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="掠夺者颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorRaiders, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Boss Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="Boss颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorBosses, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
-                     </WrapPanel>
-                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="Max Distance (0 = Unlimited):" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    </WrapPanel>
+                    <WrapPanel Margin="0,4,0,0">
+                        <TextBlock Text="最大距离（0 = 无限制）：" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <Slider x:Name="AIDistanceSlider"
                                 Width="200"
                                 Margin="0,0,8,0"
@@ -196,39 +196,39 @@
                                 SmallChange="10"
                                 LargeChange="50"
                                 Value="{Binding EspAIMaxDistance, Mode=TwoWay}"/>
-                        <TextBlock Text="{Binding Value, ElementName=AIDistanceSlider, StringFormat='{}{0:F0}m'}"
+                        <TextBlock Text="{Binding Value, ElementName=AIDistanceSlider, StringFormat='{}{0:F0}米'}"
                                    VerticalAlignment="Center"
                                    MinWidth="50"/>
-                     </WrapPanel>
-                    <TextBlock Text="Head circles inherit the entity color (players, scavs, raiders, bosses)."
+                    </WrapPanel>
+                    <TextBlock Text="头部圆圈继承实体颜色（玩家、拾荒者、突袭者、首领）。"
                                Foreground="Gray"
                                FontSize="10"
                                Margin="0,8,0,0"/>
                 </StackPanel>
             </GroupBox>
-            
-            <GroupBox Header="Loot, Exfils &amp; Explosives" Margin="0,0,0,12">
+
+            <GroupBox Header="战利品、撤离点及爆炸物" Margin="0,0,0,12">
                 <StackPanel>
-                     <WrapPanel>
-                        <CheckBox Content="Show Loot" IsChecked="{Binding EspLoot, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Show Prices" IsChecked="{Binding EspLootPrice, Mode=TwoWay}" Margin="0,0,16,8" IsEnabled="{Binding EspLoot}" />
-                        <CheckBox Content="Show Exfils" IsChecked="{Binding EspExfils, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Show Tripwires" IsChecked="{Binding EspTripwires, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Show Grenades" IsChecked="{Binding EspGrenades, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Loot Cone Filter"
+                    <WrapPanel>
+                        <CheckBox Content="显示战利品" IsChecked="{Binding EspLoot, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="显示价格" IsChecked="{Binding EspLootPrice, Mode=TwoWay}" Margin="0,0,16,8" IsEnabled="{Binding EspLoot}" />
+                        <CheckBox Content="显示撤离点" IsChecked="{Binding EspExfils, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="显示绊线" IsChecked="{Binding EspTripwires, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="显示手榴弹" IsChecked="{Binding EspGrenades, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="战利品锥形过滤"
                                   IsChecked="{Binding EspLootConeEnabled, Mode=TwoWay}"
                                   Margin="0,0,16,8" />
-                     </WrapPanel>
-                     <WrapPanel Margin="0,4,0,0">
-                        <CheckBox Content="Show Food" IsChecked="{Binding EspFood, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Show Meds" IsChecked="{Binding EspMeds, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Show Backpacks" IsChecked="{Binding EspBackpacks, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Show Quest Items" IsChecked="{Binding EspQuestLoot, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Show Corpses" IsChecked="{Binding EspCorpses, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Show Containers" IsChecked="{Binding EspContainers, Mode=TwoWay}" Margin="0,0,16,8" />
-                     </WrapPanel>
-                     <WrapPanel Margin="0,4,0,0" IsEnabled="{Binding EspContainers}">
-                        <TextBlock Text="Container Distance (ESP)"
+                    </WrapPanel>
+                    <WrapPanel Margin="0,4,0,0">
+                        <CheckBox Content="显示食物" IsChecked="{Binding EspFood, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="显示药品" IsChecked="{Binding EspMeds, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="显示背包" IsChecked="{Binding EspBackpacks, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="显示任务物品" IsChecked="{Binding EspQuestLoot, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="显示尸体" IsChecked="{Binding EspCorpses, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="显示容器" IsChecked="{Binding EspContainers, Mode=TwoWay}" Margin="0,0,16,8" />
+                    </WrapPanel>
+                    <WrapPanel Margin="0,4,0,0" IsEnabled="{Binding EspContainers}">
+                        <TextBlock Text="容器距离（ESP）"
                                    VerticalAlignment="Center" />
                         <Slider x:Name="EspContainerDistanceSlider"
                                 Width="150"
@@ -241,9 +241,9 @@
                         <TextBlock Text="{Binding Value, ElementName=EspContainerDistanceSlider, StringFormat='{}{0:F0}'}"
                                    VerticalAlignment="Center"
                                    Margin="8,0,0,0" />
-                     </WrapPanel>
-                     <WrapPanel Margin="0,4,0,0" IsEnabled="{Binding EspLootConeEnabled}">
-                        <TextBlock Text="Cone Angle"
+                    </WrapPanel>
+                    <WrapPanel Margin="0,4,0,0" IsEnabled="{Binding EspLootConeEnabled}">
+                        <TextBlock Text="锥形角度"
                                    VerticalAlignment="Center" />
                         <Slider x:Name="LootConeSlider"
                                 Width="150"
@@ -256,9 +256,9 @@
                         <TextBlock Text="{Binding Value, ElementName=LootConeSlider, StringFormat=F0}"
                                    VerticalAlignment="Center"
                                    Margin="8,0,0,0" />
-                     </WrapPanel>
+                    </WrapPanel>
                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="Max Distance (0 = Unlimited):" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="最大距离（0 = 无限制）：" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <Slider x:Name="LootDistanceSlider"
                                 Width="200"
                                 Margin="0,0,8,0"
@@ -267,39 +267,39 @@
                                 SmallChange="10"
                                 LargeChange="50"
                                 Value="{Binding EspLootMaxDistance, Mode=TwoWay}"/>
-                        <TextBlock Text="{Binding Value, ElementName=LootDistanceSlider, StringFormat='{}{0:F0}m'}"
+                        <TextBlock Text="{Binding Value, ElementName=LootDistanceSlider, StringFormat='{}{0:F0}米'}"
                                    VerticalAlignment="Center"
                                    MinWidth="50"/>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Loot Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="战利品颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorLoot, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Container Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="容器颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorContainers, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Exfil Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="撤离点颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorExfil, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Tripwire Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="绊线颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorTripwire, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Grenade Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="手榴弹颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorGrenade, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
@@ -309,12 +309,12 @@
                 </StackPanel>
             </GroupBox>
 
-            <!-- Performance Settings -->
-            <GroupBox Header="Misc"
+            <!-- 杂项设置 -->
+            <GroupBox Header="杂项"
                       Margin="0,0,0,12">
                 <StackPanel>
                     <StackPanel Margin="0,0,0,8">
-                        <TextBlock Text="ESP Max FPS (0 = unlimited / 144 default):"
+                        <TextBlock Text="ESP最大帧率（0 = 无限制 / 默认144）："
                                    VerticalAlignment="Center" />
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                             <Slider x:Name="EspFpsSlider"
@@ -330,20 +330,20 @@
                                        VerticalAlignment="Center"
                                        Margin="8,0,0,0" />
                         </StackPanel>
-                        <TextBlock Text="0 = unlimited (defaults to 144). Lower values save CPU/GPU."
+                        <TextBlock Text="0 = 无限制（默认144）。较低值可节省CPU/GPU资源。"
                                    Foreground="Gray"
                                    FontSize="10"
                                    Margin="0,2,0,0" />
                     </StackPanel>
 
 
-                    <CheckBox Content="Crosshair"
-                                  ToolTip="Displays a simple crosshair at the center of the ESP window."
+                    <CheckBox Content="准星"
+                                  ToolTip="在ESP窗口中心显示简单准星。"
                                   IsChecked="{Binding EspCrosshair, Mode=TwoWay}"
                                   Margin="0,0,16,8" />
 
                     <WrapPanel Margin="0,4,0,0" IsEnabled="{Binding EspCrosshair}">
-                        <TextBlock Text="Crosshair Length" VerticalAlignment="Center"/>
+                        <TextBlock Text="准星长度" VerticalAlignment="Center"/>
                         <Slider x:Name="CrosshairLengthSlider"
                                 Width="150"
                                 Margin="8,0"
@@ -358,11 +358,11 @@
                     </WrapPanel>
 
                     <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="Crosshair Color:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="准星颜色：" VerticalAlignment="Center" Margin="0,0,6,0"/>
                         <xctk:ColorPicker Width="42" Height="26"
-                                              SelectedColor="{Binding EspColorCrosshair, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
-                                              UsingAlphaChannel="True"
-                                              ShowRecentColors="False"/>
+                                          SelectedColor="{Binding EspColorCrosshair, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
+                                          UsingAlphaChannel="True"
+                                          ShowRecentColors="False"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>

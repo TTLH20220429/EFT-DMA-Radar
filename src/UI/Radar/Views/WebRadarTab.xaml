@@ -18,7 +18,7 @@
                     Margin="0,0,0,10">
 
             <!-- Web Radar Server -->
-            <GroupBox Header="Web Radar Server"
+            <GroupBox Header="网页雷达服务器"
                       Margin="0,0,0,12">
                 <StackPanel>
 
@@ -28,7 +28,7 @@
                         <!-- Start -->
                         <Button Content="{Binding StartButtonText}"
                                 IsEnabled="{Binding UiEnabled}"
-                                ToolTip="Start the embedded web server."
+                                ToolTip="启动嵌入式Web服务器"
                                 Command="{Binding StartServerCommand}"
                                 MinWidth="80"
                                 Height="35"
@@ -37,52 +37,52 @@
                         <!-- UPnP -->
                         <CheckBox Content="UPnP"
                                   IsEnabled="{Binding UiEnabled}"
-                                  ToolTip="Automatically open the port on your router using UPnP (if supported)."
+                                  ToolTip="通过UPnP自动在路由器上开放端口（如支持）"
                                   IsChecked="{Binding UpnpEnabled, Mode=TwoWay}"
                                   Margin="0,0,16,8" />
 
                         <!-- Bind IP/Host -->
-                        <TextBlock Text="Bind IP/Host"
+                        <TextBlock Text="绑定IP/主机名"
                                    VerticalAlignment="Center"
                                    Margin="0,0,4,8"
-                                   ToolTip="Interface or hostname to bind. Use 0.0.0.0 to listen on all interfaces." />
+                                   ToolTip="要绑定的网络接口或主机名。使用0.0.0.0监听所有接口" />
                         <TextBox Width="150"
                                  Margin="0,0,12,8"
-                                 ToolTip="Interface or hostname to bind. Use 0.0.0.0 to listen on all interfaces."
+                                 ToolTip="要绑定的网络接口或主机名。使用0.0.0.0监听所有接口"
                                  IsEnabled="{Binding UiEnabled}"
                                  Text="{Binding BindAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <!-- Port -->
-                        <TextBlock Text="Port"
-                                   ToolTip="TCP Port to listen on. This will need to be forwarded in your router, or via UPnP."
+                        <TextBlock Text="端口"
+                                   ToolTip="监听的TCP端口。需要在路由器中转发该端口，或通过UPnP自动转发"
                                    VerticalAlignment="Center"
                                    Margin="0,0,4,8" />
                         <TextBox Width="80"
                                  Margin="0,0,12,8"
-                                 ToolTip="TCP Port to listen on. This will need to be forwarded in your router, or via UPnP."
+                                 ToolTip="监听的TCP端口。需要在路由器中转发该端口，或通过UPnP自动转发"
                                  IsEnabled="{Binding UiEnabled}"
                                  Text="{Binding Port, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <!-- Tick Rate -->
-                        <TextBlock Text="Tick Rate (hz)"
-                                   ToolTip="Broadcast rate (per second) for Web Radar Updates."
+                        <TextBlock Text="更新频率(赫兹)"
+                                   ToolTip="网页雷达数据的广播频率（每秒次数）"
                                    VerticalAlignment="Center"
                                    Margin="0,0,4,8" />
                         <TextBox Width="80"
-                                 ToolTip="Broadcast rate (per second) for Web Radar Updates."
+                                 ToolTip="网页雷达数据的广播频率（每秒次数）"
                                  Margin="0,0,12,8"
                                  IsEnabled="{Binding UiEnabled}"
                                  Text="{Binding TickRate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
                         <!-- Password -->
-                        <TextBlock Text="Password"
+                        <TextBlock Text="密码"
                                    VerticalAlignment="Center"
-                                   ToolTip="Password required by clients."
+                                   ToolTip="客户端连接所需的密码"
                                    Margin="0,0,4,8" />
                         <TextBox Width="140"
                                  IsReadOnly="True"
                                  Margin="0,0,12,8"
-                                 ToolTip="Password required by clients."
+                                 ToolTip="客户端连接所需的密码"
                                  IsEnabled="{Binding UiEnabled}"
                                  Text="{Binding Password, Mode=OneWay, UpdateSourceTrigger=Default}" />
 
@@ -90,18 +90,18 @@
                         <TextBlock VerticalAlignment="Center"
                                    Margin="0,0,6,8">
                             <Hyperlink Command="{Binding CopyUrlCommand}"
-                                       ToolTip="Copy Web Radar URL to Clipboard.">
+                                       ToolTip="复制网页雷达URL到剪贴板">
                                 <Run Text="{Binding ServerUrl}" />
                             </Hyperlink>
                         </TextBlock>
                     </WrapPanel>
-                    
+
                     <!-- Help text -->
                     <TextBlock TextWrapping="Wrap"
                                Margin="4,4,4,8">
-                        If Bind IP/Host is empty the server won’t start. Use 0.0.0.0 to expose to LAN.<LineBreak />
-                        Keep the port open on your router. UPnP will try to create a router mapping if available.<LineBreak />
-                        If your friend is connecting to the Web Radar using https, they will need to allow mixed content (http/https) in their browser. We recommend connecting with HTTP only.
+                        若绑定IP/主机名为空，服务器将无法启动。使用0.0.0.0可向局域网开放。<LineBreak />
+                        请确保路由器上开放了对应端口。UPnP将尝试自动创建路由器端口映射（如支持）。<LineBreak />
+                        若好友通过HTTPS连接网页雷达，需在其浏览器中允许混合内容（HTTP/HTTPS）。建议仅使用HTTP连接。
                     </TextBlock>
                 </StackPanel>
             </GroupBox>

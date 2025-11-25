@@ -16,17 +16,17 @@
         <StackPanel Orientation="Vertical"
                     Margin="0,0,0,10">
 
-            <GroupBox Header="Static Containers"
+            <GroupBox Header="静态容器"
                       Margin="0,0,0,12">
                 <StackPanel>
                     <WrapPanel Margin="0,0,0,8">
-                        <CheckBox Content="Select All"
-                                  ToolTip="Selects all container types for display."
+                        <CheckBox Content="全选"
+                                  ToolTip="选择所有容器类型以显示"
                                   IsChecked="{Binding StaticContainersSelectAll, Mode=TwoWay}"
                                   Margin="0,0,16,8" />
                     </WrapPanel>
 
-                    <TextBlock Text="Tracked Containers"
+                    <TextBlock Text="追踪的容器类型"
                                VerticalAlignment="Center"
                                Margin="0,0,4,8" />
 

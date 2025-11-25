@@ -8,7 +8,7 @@
         xmlns:tabs="clr-namespace:LoneEftDmaRadar.UI.Radar.Views"
         xmlns:hotkeys="clr-namespace:LoneEftDmaRadar.UI.Hotkeys"
         mc:Ignorable="d"
-        Title="Moulman EFT DMA Radar"
+        Title="Moulman EFT DMA Radar —— By ttlh 汉化"
         Width="1280" Height="720"
         Icon="/lone-icon.ico">
     <d:Window.DataContext>
@@ -18,15 +18,16 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="67*"/>
-            <ColumnDefinition Width="1213*"/>
+            <ColumnDefinition Width="87*"/>
+            <ColumnDefinition Width="1126*"/>
         </Grid.ColumnDefinitions>
-        <TabControl Grid.ColumnSpan="2">
-            <TabItem Header="Radar"
+        <TabControl Grid.ColumnSpan="3">
+            <TabItem Header="雷达"
                      x:Name="RadarTab">
                 <tabs:RadarTab x:Name="Radar" />
             </TabItem>
 
-            <TabItem Header="Settings">
+            <TabItem Header="设置">
                 <TabControl Margin="4">
                     <TabItem Header="Radar">
                         <tabs:SettingsTab x:Name="Settings" />
@@ -52,16 +53,16 @@
                 </TabControl>
             </TabItem>
 
-            <TabItem Header="Web Radar">
+            <TabItem Header="网页雷达">
                 <tabs:WebRadarTab x:Name="WebRadar" />
             </TabItem>
-            <TabItem Header="Player History">
+            <TabItem Header="玩家历史">
                 <tabs:PlayerHistoryTab x:Name="PlayerHistory"/>
             </TabItem>
-            <TabItem Header="Player Watchlist">
+            <TabItem Header="主播名单">
                 <tabs:PlayerWatchlistTab x:Name="PlayerWatchlist"/>
             </TabItem>
-            <TabItem Header="Debug">
+            <TabItem Header="调试">
                 <tabs:DebugTab x:Name="DebugTab" />
             </TabItem>
         </TabControl>

@@ -13,13 +13,13 @@
              d:DesignHeight="200"
              d:DesignWidth="300"
              Visibility="{Binding IsVisible, Converter={StaticResource BoolToVis}}">
-    <!-- design‑time VM -->
+    <!-- 设计时视图模型 -->
     <d:UserControl.DataContext>
         <d:DesignInstance Type="{x:Type vm:MapSetupHelperViewModel}"
                           IsDesignTimeCreatable="False" />
     </d:UserControl.DataContext>
     <Grid>
-        <GroupBox Header="Map Setup"
+        <GroupBox Header="地图设置"
                   Foreground="White"
                   BorderBrush="#FF3C3C3C"
                   Background="#FF2D2D30"
@@ -31,7 +31,7 @@
                 <StackPanel Orientation="Horizontal"
                             Margin="0,0,0,6"
                             VerticalAlignment="Center">
-                    <TextBlock Text="X,Y"
+                    <TextBlock Text="坐标（X,Y）"
                                Foreground="White"
                                VerticalAlignment="Center" />
                     <TextBox Width="100"
@@ -44,7 +44,7 @@
                 <StackPanel Orientation="Horizontal"
                             Margin="0,0,0,12"
                             VerticalAlignment="Center">
-                    <TextBlock Text="Scale"
+                    <TextBlock Text="缩放比例"
                                Foreground="White"
                                VerticalAlignment="Center" />
                     <TextBox Width="100"
@@ -52,7 +52,7 @@
                              Text="{Binding Scale, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 </StackPanel>
 
-                <Button Content="Apply"
+                <Button Content="应用"
                         Width="80"
                         HorizontalAlignment="Right"
                         Command="{Binding ApplyCommand}" />
