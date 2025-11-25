@@ -1,4 +1,4 @@
-<UserControl x:Class="LoneEftDmaRadar.UI.Radar.Views.MemWritesTab"
+﻿<UserControl x:Class="LoneEftDmaRadar.UI.Radar.Views.MemWritesTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:LoneEftDmaRadar.UI.Radar.ViewModels"
@@ -23,7 +23,7 @@
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Orientation="Vertical" Margin="0,0,0,10">
 
-            <!-- ���ؾ��� -->
+            <!-- 严重警告 -->
             <Border Background="{StaticResource CardBackgroundBrush}"
                     BorderBrush="{StaticResource DangerBrush}"
                     BorderThickness="1"
@@ -36,46 +36,46 @@
                             CornerRadius="4"
                             DockPanel.Dock="Left" />
                     <StackPanel Margin="12,0,0,0">
-                        <TextBlock Text="�ڴ�д�빦�ܷ��ռ���"
+                        <TextBlock Text="内存写入功能风险极高"
                                    FontWeight="SemiBold"
                                    FontSize="16"
                                    Foreground="{StaticResource ForegroundBrush}" />
                         <TextBlock TextWrapping="Wrap"
                                    Foreground="{StaticResource MutedBrush}"
                                    Margin="0,6,0,0">
-                            ��Щ����ֱ���޸���Ϸ�ڴ棬���ױ�����ǡ�һ�������֣�����ʻᵼ���˺ŷ����
+                            这些功能直接修改游戏内存，极易被检测标记。一旦被发现，大概率会导致账号封禁。
                         </TextBlock>
                         <TextBlock TextWrapping="Wrap"
                                    Foreground="{StaticResource MutedBrush}"
                                    Margin="0,6,0,0">
-                            ��������ܸ÷��գ������״˹��ܲ���ģ�����������Ϊʱ���ټ���ʹ�á�
+                            仅当你接受该风险，且明白此功能不会模拟正常玩家行为时，再继续使用。
                         </TextBlock>
                     </StackPanel>
                 </DockPanel>
             </Border>
 
-            <!-- �ܿ��ؿ��� -->
-            <GroupBox Header="�ܿ���" Margin="0,0,0,12">
+            <!-- 总开关控制 -->
+            <GroupBox Header="总控制" Margin="0,0,0,12">
                 <Border Background="{StaticResource CardBackgroundBrush}"
                         BorderBrush="{StaticResource CardBorderBrush}"
                         BorderThickness="1"
                         CornerRadius="10"
                         Padding="12">
                     <StackPanel>
-                        <CheckBox Content="�����ڴ�д�빦��"
+                        <CheckBox Content="启用内存写入功能"
                                   IsChecked="{Binding Enabled, Mode=TwoWay}"
                                   FontWeight="SemiBold"
                                   FontSize="14"
                                   Foreground="{StaticResource ForegroundBrush}"
                                   Margin="0,0,0,10" />
 
-                        <TextBlock Text="�κ��ڴ�д�빦�ܶ����뿪�����ܿ��ز������С�"
+                        <TextBlock Text="任何内存写入功能都必须开启此总开关才能运行。"
                                    TextWrapping="Wrap"
                                    Foreground="{StaticResource MutedBrush}"
                                    FontSize="12"
                                    Margin="0,0,0,4" />
 
-                        <TextBlock Text="�رմ˿��ؽ������·�����ѡ�"
+                        <TextBlock Text="关闭此开关将禁用下方所有选项。"
                                    TextWrapping="Wrap"
                                    Foreground="{StaticResource MutedBrush}"
                                    FontSize="12" />
@@ -85,22 +85,22 @@
 
             <UniformGrid Columns="2" Rows="0" Margin="0,0,0,12">
 
-                <!-- ��Ĭ��׼ -->
-                <GroupBox Header="��Ĭ��׼" Margin="0,0,12,12">
+                <!-- 静默瞄准 -->
+                <GroupBox Header="静默瞄准" Margin="0,0,12,12">
                     <Border Background="{StaticResource CardBackgroundBrush}"
                             BorderBrush="{StaticResource CardBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="10"
                             Padding="12">
                         <StackPanel IsEnabled="{Binding Enabled}">
-                            <CheckBox Content="���þ�Ĭ��׼"
+                            <CheckBox Content="启用静默瞄准"
                                       IsChecked="{Binding MemoryAimEnabled, Mode=TwoWay}"
                                       FontWeight="SemiBold"
                                       Foreground="{StaticResource ForegroundBrush}"
                                       Margin="0,0,0,10" />
 
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                <TextBlock Text="Ŀ�������"
+                                <TextBlock Text="目标骨骼："
                                            VerticalAlignment="Center"
                                            Foreground="{StaticResource ForegroundBrush}"
                                            Margin="0,0,8,0" />
@@ -109,13 +109,13 @@
                                           Width="200" />
                             </StackPanel>
 
-                            <TextBlock Text="���ڴ����޸�������򣬶����ƶ���ꡣ"
+                            <TextBlock Text="在内存中修改射击方向，而非移动鼠标。"
                                        TextWrapping="Wrap"
                                        Foreground="{StaticResource MutedBrush}"
                                        FontSize="12"
                                        Margin="0,0,0,6" />
 
-                            <TextBlock Text="���豸���鹲��ͬһ����׼���������豸�����Ӳ��֧�֡�"
+                            <TextBlock Text="与设备自瞄共用同一个瞄准键，无需设备自瞄的硬件支持。"
                                    TextWrapping="Wrap"
                                    Foreground="{StaticResource ForegroundBrush}"
                                    FontSize="12"
@@ -128,17 +128,17 @@
                                     Padding="10"
                                     Margin="0,6,0,0">
                                 <StackPanel>
-                                    <TextBlock Text="����ԭ��"
+                                    <TextBlock Text="工作原理"
                                                FontWeight="SemiBold"
                                                Foreground="{StaticResource AccentBrush}" />
                                     <TextBlock TextWrapping="Wrap"
                                                Foreground="{StaticResource MutedBrush}"
                                                FontSize="12"
                                                Margin="0,4,0,0">
-                                        - ��ס��׼�����㵱ǰĿ��ķ�������
-                                        - ����������ֱ��д���ڴ�
-                                        - �ӵ����ظ��������У������κ�����ƶ�
-                                        - �����豸�������ã���Ұ��Χ��Ԥ�⡢���ˣ���Ȼ��Ч
+                                        - 按住瞄准键计算当前目标的方向向量
+                                        - 计算后的向量直接写入内存
+                                        - 子弹将沿该向量飞行，无需任何鼠标移动
+                                        - 所有设备自瞄设置（视野范围、预测、过滤）仍然生效
                                     </TextBlock>
                                 </StackPanel>
                             </Border>
@@ -150,10 +150,10 @@
                                     Padding="10"
                                     Margin="0,10,0,0">
                                 <StackPanel>
-                                    <TextBlock Text="�����գ�����"
+                                    <TextBlock Text="检测风险：极高"
                                                FontWeight="SemiBold"
                                                Foreground="{StaticResource DangerBrush}" />
-                                    <TextBlock Text="��Ĭ��׼��Ϊ�Կ�����ϵͳ��˵�������ԡ�"
+                                    <TextBlock Text="静默瞄准行为对抗作弊系统来说极其明显。"
                                                TextWrapping="Wrap"
                                                Foreground="{StaticResource MutedBrush}"
                                                FontSize="12"
@@ -164,34 +164,34 @@
                     </Border>
                 </GroupBox>
 
-                <!-- �޺����� -->
-                <GroupBox Header="�޺�����" Margin="0,0,12,12">
+                <!-- 无后坐力 -->
+                <GroupBox Header="无后坐力" Margin="0,0,12,12">
                     <Border Background="{StaticResource CardBackgroundBrush}"
                             BorderBrush="{StaticResource CardBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="10"
                             Padding="12">
                         <StackPanel IsEnabled="{Binding Enabled}">
-                            <CheckBox Content="�����޺�����"
+                            <CheckBox Content="启用无后坐力"
                                       IsChecked="{Binding NoRecoilEnabled, Mode=TwoWay}"
                                       FontWeight="SemiBold"
                                       Foreground="{StaticResource ForegroundBrush}"
                                       Margin="0,0,0,10" />
 
-                            <TextBlock Text="����д���ڴ�ĺ�������ǹ�ڻζ�ֵ��100% ��ȫ�Ƴ���������0% ����ԭʼ���á�"
+                            <TextBlock Text="调整写入内存的后坐力和枪口晃动值。100% 完全移除后坐力；0% 保持原始设置。"
                                        TextWrapping="Wrap"
                                        Foreground="{StaticResource MutedBrush}"
                                        FontSize="12"
                                        Margin="0,0,0,10" />
 
-                            <!-- ������������ -->
+                            <!-- 后坐力降低量 -->
                             <StackPanel Margin="0,6,0,0" IsEnabled="{Binding NoRecoilEnabled}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="160" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="����������"
+                                    <TextBlock Text="后坐力降低"
                                                Foreground="{StaticResource ForegroundBrush}" />
                                     <TextBlock Text="{Binding NoRecoilAmount, StringFormat='{}{0:F0}%'}"
                                                FontWeight="SemiBold"
@@ -207,14 +207,14 @@
                                         Margin="0,6,0,0" />
                             </StackPanel>
 
-                            <!-- �ζ������� -->
+                            <!-- 晃动降低量 -->
                             <StackPanel Margin="0,12,0,0" IsEnabled="{Binding NoRecoilEnabled}">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="160" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="ǹ�ڻζ�����"
+                                    <TextBlock Text="枪口晃动降低"
                                                Foreground="{StaticResource ForegroundBrush}" />
                                     <TextBlock Text="{Binding NoSwayAmount, StringFormat='{}{0:F0}%'}"
                                                FontWeight="SemiBold"
@@ -237,10 +237,10 @@
                                     Padding="10"
                                     Margin="0,12,0,0">
                                 <StackPanel>
-                                    <TextBlock Text="�����գ���"
+                                    <TextBlock Text="检测风险：高"
                                                FontWeight="SemiBold"
                                                Foreground="{StaticResource WarningBrush}" />
-                                    <TextBlock Text="ֱ���޸��ڴ��е�������Ϊ�����ױ�����ǡ�"
+                                    <TextBlock Text="直接修改内存中的武器行为，容易被检测标记。"
                                                TextWrapping="Wrap"
                                                Foreground="{StaticResource MutedBrush}"
                                                FontSize="12"
@@ -251,27 +251,27 @@
                     </Border>
                 </GroupBox>
 
-                <!-- �������� -->
-                <GroupBox Header="��������" Margin="0,0,12,12">
+                <!-- 无限体力 -->
+                <GroupBox Header="无限体力" Margin="0,0,12,12">
                     <Border Background="{StaticResource CardBackgroundBrush}"
                             BorderBrush="{StaticResource CardBorderBrush}"
                             BorderThickness="1"
                             CornerRadius="10"
                             Padding="12">
                         <StackPanel IsEnabled="{Binding Enabled}">
-                            <CheckBox Content="������������"
+                            <CheckBox Content="启用无限体力"
                                       IsChecked="{Binding InfiniteStaminaEnabled, Mode=TwoWay}"
                                       FontWeight="SemiBold"
                                       Foreground="{StaticResource ForegroundBrush}"
                                       Margin="0,0,0,10" />
 
-                            <TextBlock Text="����������������Լ����֮һ����ʱ�Զ����䡣"
+                            <TextBlock Text="当体力和氧气降至约三分之一以下时自动补充。"
                                        TextWrapping="Wrap"
                                        Foreground="{StaticResource MutedBrush}"
                                        FontSize="12"
                                        Margin="0,0,0,6" />
 
-                            <TextBlock Text="ͬʱ�����ƹ�ƣ��״̬�������ƶ��ͷ���"
+                            <TextBlock Text="同时尝试绕过疲劳状态，避免移动惩罚。"
                                        TextWrapping="Wrap"
                                        Foreground="{StaticResource MutedBrush}"
                                        FontSize="12"
@@ -284,10 +284,10 @@
                                     Padding="10"
                                     Margin="0,6,0,0">
                                 <StackPanel>
-                                    <TextBlock Text="�����գ���"
+                                    <TextBlock Text="检测风险：中"
                                                FontWeight="SemiBold"
                                                Foreground="{StaticResource WarningBrush}" />
-                                    <TextBlock Text="��������޸���Ⱥ������Ƴ�û��ô���ԣ����Կɱ���⡣"
+                                    <TextBlock Text="玩家属性修改相比后坐力移除没那么明显，但仍可被检测。"
                                                TextWrapping="Wrap"
                                                Foreground="{StaticResource MutedBrush}"
                                                FontSize="12"

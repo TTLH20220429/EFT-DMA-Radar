@@ -1,4 +1,4 @@
-<UserControl x:Class="LoneEftDmaRadar.UI.Radar.Views.StaticContainersTab"
+ï»¿<UserControl x:Class="LoneEftDmaRadar.UI.Radar.Views.StaticContainersTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,17 +16,17 @@
         <StackPanel Orientation="Vertical"
                     Margin="0,0,0,10">
 
-            <GroupBox Header="¾²Ì¬ÈÝÆ÷"
+            <GroupBox Header="é™æ€å®¹å™¨"
                       Margin="0,0,0,12">
                 <StackPanel>
                     <WrapPanel Margin="0,0,0,8">
-                        <CheckBox Content="È«Ñ¡"
-                                  ToolTip="Ñ¡ÔñËùÓÐÈÝÆ÷ÀàÐÍÒÔÏÔÊ¾"
+                        <CheckBox Content="å…¨é€‰"
+                                  ToolTip="é€‰æ‹©æ‰€æœ‰å®¹å™¨ç±»åž‹ä»¥æ˜¾ç¤º"
                                   IsChecked="{Binding StaticContainersSelectAll, Mode=TwoWay}"
                                   Margin="0,0,16,8" />
                     </WrapPanel>
 
-                    <TextBlock Text="×·×ÙµÄÈÝÆ÷ÀàÐÍ"
+                    <TextBlock Text="è¿½è¸ªçš„å®¹å™¨ç±»åž‹"
                                VerticalAlignment="Center"
                                Margin="0,0,4,8" />
 

@@ -1,4 +1,4 @@
-<Window x:Class="LoneEftDmaRadar.MainWindow"
+ï»¿<Window x:Class="LoneEftDmaRadar.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +8,7 @@
         xmlns:tabs="clr-namespace:LoneEftDmaRadar.UI.Radar.Views"
         xmlns:hotkeys="clr-namespace:LoneEftDmaRadar.UI.Hotkeys"
         mc:Ignorable="d"
-        Title="Moulman EFT DMA Radar ¡ª¡ª By ttlh ºº»¯"
+        Title="Moulman EFT DMA Radar â€”â€” By ttlh æ±‰åŒ–"
         Width="1280" Height="720"
         Icon="/lone-icon.ico">
     <d:Window.DataContext>
@@ -22,20 +22,20 @@
             <ColumnDefinition Width="1126*"/>
         </Grid.ColumnDefinitions>
         <TabControl Grid.ColumnSpan="3">
-            <TabItem Header="À×´ï"
+            <TabItem Header="é›·è¾¾"
                      x:Name="RadarTab">
                 <tabs:RadarTab x:Name="Radar" />
             </TabItem>
 
-            <TabItem Header="ÉèÖÃ">
+            <TabItem Header="è®¾ç½®">
                 <TabControl Margin="4">
-                    <TabItem Header="Radar">
+                    <TabItem Header="é›·è¾¾">
                         <tabs:SettingsTab x:Name="Settings" />
                     </TabItem>
-                    <TabItem Header="ESP Fuser">
+                    <TabItem Header="ESP é€è§†">
                         <tabs:EspSettingsTab x:Name="EspSettings" />
                     </TabItem>
-                    <TabItem Header="Loot Filters">
+                    <TabItem Header="ç‰©å“è¿‡æ»¤">
                         <tabs:LootFiltersTab x:Name="LootFilters"/>
                     </TabItem>
                     <TabItem Header="Static Containers">
@@ -53,16 +53,16 @@
                 </TabControl>
             </TabItem>
 
-            <TabItem Header="ÍøÒ³À×´ï">
+            <TabItem Header="ç½‘é¡µé›·è¾¾">
                 <tabs:WebRadarTab x:Name="WebRadar" />
             </TabItem>
-            <TabItem Header="Íæ¼ÒÀúÊ·">
+            <TabItem Header="çŽ©å®¶åŽ†å²">
                 <tabs:PlayerHistoryTab x:Name="PlayerHistory"/>
             </TabItem>
-            <TabItem Header="Ö÷²¥Ãûµ¥">
+            <TabItem Header="ä¸»æ’­åå•">
                 <tabs:PlayerWatchlistTab x:Name="PlayerWatchlist"/>
             </TabItem>
-            <TabItem Header="µ÷ÊÔ">
+            <TabItem Header="è°ƒè¯•">
                 <tabs:DebugTab x:Name="DebugTab" />
             </TabItem>
         </TabControl>

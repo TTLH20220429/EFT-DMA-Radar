@@ -1,4 +1,4 @@
-<UserControl x:Class="LoneEftDmaRadar.UI.Radar.Views.EspSettingsTab"
+ï»¿<UserControl x:Class="LoneEftDmaRadar.UI.Radar.Views.EspSettingsTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:LoneEftDmaRadar.UI.Radar.Views"
@@ -23,59 +23,59 @@
         <StackPanel Orientation="Vertical"
                     Margin="0,0,0,10">
 
-            <!-- Í¨ÓÃÉèÖÃ -->
-            <GroupBox Header="ESP ÈÚºÏÆ÷Í¨ÓÃÉèÖÃ"
+            <!-- é€šç”¨è®¾ç½® -->
+            <GroupBox Header="ESP èžåˆå™¨é€šç”¨è®¾ç½®"
                       Margin="0,0,0,12">
                 <StackPanel>
                     <WrapPanel>
-                        <Button Content="Æô¶¯ÈÚºÏÆ÷"
+                        <Button Content="å¯åŠ¨èžåˆå™¨"
                                 Command="{Binding StartEspCommand}"
                                 Width="120"
                                 Height="32"
                                 Margin="0,0,16,8"
-                                ToolTip="ÒÔÈ«ÆÁÄ£Ê½´ò¿ªESP´°¿Ú¡£"/>
+                                ToolTip="ä»¥å…¨å±æ¨¡å¼æ‰“å¼€ESPçª—å£ã€‚"/>
                     </WrapPanel>
 
                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="Ä¿±êÆÁÄ»£º" VerticalAlignment="Center" Margin="0,0,8,0" Width="100"/>
+                        <TextBlock Text="ç›®æ ‡å±å¹•ï¼š" VerticalAlignment="Center" Margin="0,0,8,0" Width="100"/>
                         <ComboBox Width="300"
                                   ItemsSource="{Binding AvailableScreens}"
                                   SelectedValue="{Binding EspTargetScreen, Mode=TwoWay}"
                                   SelectedValuePath="Index"
                                   DisplayMemberPath="DisplayName"
-                                  ToolTip="Ê¹ÓÃÆô¶¯ÈÚºÏÆ÷Ê±£¬Ñ¡ÔñÏÔÊ¾ESP´°¿ÚµÄÏÔÊ¾Æ÷"/>
+                                  ToolTip="ä½¿ç”¨å¯åŠ¨èžåˆå™¨æ—¶ï¼Œé€‰æ‹©æ˜¾ç¤ºESPçª—å£çš„æ˜¾ç¤ºå™¨"/>
                     </WrapPanel>
 
                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="·Ö±æÂÊ¸²¸Ç£¨0 = ×Ô¶¯£©£º" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBox Width="50" Text="{Binding EspScreenWidth, Mode=TwoWay}" Margin="0,0,8,0" ToolTip="¿í¶È£¨ÀýÈç£º1920£©"/>
-                        <TextBlock Text="¡Á" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBox Width="50" Text="{Binding EspScreenHeight, Mode=TwoWay}" Margin="0,0,16,0" ToolTip="¸ß¶È£¨ÀýÈç£º1080£©"/>
+                        <TextBlock Text="åˆ†è¾¨çŽ‡è¦†ç›–ï¼ˆ0 = è‡ªåŠ¨ï¼‰ï¼š" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Width="50" Text="{Binding EspScreenWidth, Mode=TwoWay}" Margin="0,0,8,0" ToolTip="å®½åº¦ï¼ˆä¾‹å¦‚ï¼š1920ï¼‰"/>
+                        <TextBlock Text="Ã—" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Width="50" Text="{Binding EspScreenHeight, Mode=TwoWay}" Margin="0,0,16,0" ToolTip="é«˜åº¦ï¼ˆä¾‹å¦‚ï¼š1080ï¼‰"/>
                     </WrapPanel>
 
-                    <GroupBox Header="ÎÄ±¾ÑùÊ½" Margin="0,8,0,0">
+                    <GroupBox Header="æ–‡æœ¬æ ·å¼" Margin="0,8,0,0">
                         <StackPanel>
                             <WrapPanel Margin="0,4,0,0">
-                                <TextBlock Text="×ÖÌå¼Ò×å£º" VerticalAlignment="Center" Width="90"/>
+                                <TextBlock Text="å­—ä½“å®¶æ—ï¼š" VerticalAlignment="Center" Width="90"/>
                                 <TextBox Width="180"
                                          Text="{Binding EspFontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="Ê¹ÓÃÈÎºÎÒÑ°²×°µÄ×ÖÌå¼Ò×åÃû³Æ£¨ÀýÈç£ºÎ¢ÈíÑÅºÚ¡¢ËÎÌå¡¢Consolas£©"/>
+                                         ToolTip="ä½¿ç”¨ä»»ä½•å·²å®‰è£…çš„å­—ä½“å®¶æ—åç§°ï¼ˆä¾‹å¦‚ï¼šå¾®è½¯é›…é»‘ã€å®‹ä½“ã€Consolasï¼‰"/>
                             </WrapPanel>
                             <WrapPanel Margin="0,4,0,0">
-                                <TextBlock Text="×ÖÌå´óÐ¡£¨Ð¡/ÖÐ/´ó£©£º" VerticalAlignment="Center" Width="90"/>
+                                <TextBlock Text="å­—ä½“å¤§å°ï¼ˆå°/ä¸­/å¤§ï¼‰ï¼š" VerticalAlignment="Center" Width="120"/>
                                 <TextBox Width="50"
                                          Text="{Binding EspFontSizeSmall, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="Ð¡ÎÄ±¾´óÐ¡£¨Õ½ÀûÆ·±êÇ©£©"/>
+                                         ToolTip="å°æ–‡æœ¬å¤§å°ï¼ˆæˆ˜åˆ©å“æ ‡ç­¾ï¼‰"/>
                                 <TextBlock Text="/" VerticalAlignment="Center" Margin="6,0"/>
                                 <TextBox Width="50"
                                          Text="{Binding EspFontSizeMedium, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="ÖÐÎÄ±¾´óÐ¡£¨Ãû³Æ¡¢³·Àëµã£©"/>
+                                         ToolTip="ä¸­æ–‡æœ¬å¤§å°ï¼ˆåç§°ã€æ’¤ç¦»ç‚¹ï¼‰"/>
                                 <TextBlock Text="/" VerticalAlignment="Center" Margin="6,0"/>
                                 <TextBox Width="50"
                                          Text="{Binding EspFontSizeLarge, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="´óÎÄ±¾´óÐ¡£¨×´Ì¬ÎÄ±¾£©"/>
+                                         ToolTip="å¤§æ–‡æœ¬å¤§å°ï¼ˆçŠ¶æ€æ–‡æœ¬ï¼‰"/>
                             </WrapPanel>
-                            <TextBlock Text="¸ü¸Ä»áÁ¢¼´Ó¦ÓÃµ½ESP¸²¸Ç²ã"
+                            <TextBlock Text="æ›´æ”¹ä¼šç«‹å³åº”ç”¨åˆ°ESPè¦†ç›–å±‚"
                                        Foreground="Gray"
                                        FontSize="10"
                                        Margin="0,4,0,0"/>
@@ -84,22 +84,22 @@
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Íæ¼ÒESP" Margin="0,0,0,12">
+            <GroupBox Header="çŽ©å®¶ESP" Margin="0,0,0,12">
                 <StackPanel>
                     <WrapPanel>
-                        <CheckBox Content="·½¿ò" IsChecked="{Binding EspPlayerBoxes, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="¹Ç÷À" IsChecked="{Binding EspPlayerSkeletons, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Ãû³Æ" IsChecked="{Binding EspPlayerNames, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="¶ÓÎéID" IsChecked="{Binding EspGroupIds, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="¶ÓÎéÑÕÉ«" IsChecked="{Binding EspGroupColors, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÕóÓªÎÄ±¾" IsChecked="{Binding EspPlayerFaction, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÕóÓªÑÕÉ«" IsChecked="{Binding EspFactionColors, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÉúÃüÖµ×´Ì¬" IsChecked="{Binding EspPlayerHealth, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="¾àÀë" IsChecked="{Binding EspPlayerDistance, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Í·²¿Ô²È¦" IsChecked="{Binding EspHeadCirclePlayers, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ–¹æ¡†" IsChecked="{Binding EspPlayerBoxes, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="éª¨éª¼" IsChecked="{Binding EspPlayerSkeletons, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="åç§°" IsChecked="{Binding EspPlayerNames, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="é˜Ÿä¼ID" IsChecked="{Binding EspGroupIds, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="é˜Ÿä¼é¢œè‰²" IsChecked="{Binding EspGroupColors, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="é˜µè¥æ–‡æœ¬" IsChecked="{Binding EspPlayerFaction, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="é˜µè¥é¢œè‰²" IsChecked="{Binding EspFactionColors, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="ç”Ÿå‘½å€¼çŠ¶æ€" IsChecked="{Binding EspPlayerHealth, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="è·ç¦»" IsChecked="{Binding EspPlayerDistance, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="å¤´éƒ¨åœ†åœˆ" IsChecked="{Binding EspHeadCirclePlayers, Mode=TwoWay}" Margin="0,0,16,8" />
                     </WrapPanel>
                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="×î´ó¾àÀë£¨0 = ÎÞÏÞÖÆ£©£º" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="æœ€å¤§è·ç¦»ï¼ˆ0 = æ— é™åˆ¶ï¼‰ï¼š" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <Slider x:Name="PlayerDistanceSlider"
                                 Width="200"
                                 Margin="0,0,8,0"
@@ -108,30 +108,30 @@
                                 SmallChange="10"
                                 LargeChange="50"
                                 Value="{Binding EspPlayerMaxDistance, Mode=TwoWay}"/>
-                        <TextBlock Text="{Binding Value, ElementName=PlayerDistanceSlider, StringFormat='{}{0:F0}Ã×'}"
+                        <TextBlock Text="{Binding Value, ElementName=PlayerDistanceSlider, StringFormat='{}{0:F0}ç±³'}"
                                    VerticalAlignment="Center"
                                    MinWidth="50"/>
                     </WrapPanel>
                     <WrapPanel Margin="0,8,0,0">
-                        <TextBlock Text="±êÇ©Î»ÖÃ£¨Íæ¼Ò£©£º" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="æ ‡ç­¾ä½ç½®ï¼ˆçŽ©å®¶ï¼‰ï¼š" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <ComboBox Width="140"
                                   ItemsSource="{Binding LabelPositions}"
                                   SelectedItem="{Binding EspLabelPosition, Mode=TwoWay}"
-                                  ToolTip="Ñ¡ÔñÍæ¼Ò±êÇ©Ïà¶ÔÓÚ±ß½ç¿òµÄ»æÖÆÎ»ÖÃ¡£"/>
+                                  ToolTip="é€‰æ‹©çŽ©å®¶æ ‡ç­¾ç›¸å¯¹äºŽè¾¹ç•Œæ¡†çš„ç»˜åˆ¶ä½ç½®ã€‚"/>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="ÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="é¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorPlayers, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,4,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="BEARÕóÓª£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="BEARé˜µè¥ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorFactionBear, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
-                            <TextBlock Text="USECÕóÓª£º" VerticalAlignment="Center" Margin="10,0,6,0"/>
+                            <TextBlock Text="USECé˜µè¥ï¼š" VerticalAlignment="Center" Margin="10,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorFactionUsec, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
@@ -144,42 +144,42 @@
             <GroupBox Header="AIESP" Margin="0,0,0,12">
                 <StackPanel>
                     <WrapPanel>
-                        <CheckBox Content="·½¿ò" IsChecked="{Binding EspAIBoxes, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="¹Ç÷À" IsChecked="{Binding EspAISkeletons, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Ãû³Æ" IsChecked="{Binding EspAINames, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÉúÃüÖµ×´Ì¬" IsChecked="{Binding EspAIHealth, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="¾àÀë" IsChecked="{Binding EspAIDistance, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Í·²¿Ô²È¦" IsChecked="{Binding EspHeadCircleAI, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ–¹æ¡†" IsChecked="{Binding EspAIBoxes, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="éª¨éª¼" IsChecked="{Binding EspAISkeletons, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="åç§°" IsChecked="{Binding EspAINames, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="ç”Ÿå‘½å€¼çŠ¶æ€" IsChecked="{Binding EspAIHealth, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="è·ç¦»" IsChecked="{Binding EspAIDistance, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="å¤´éƒ¨åœ†åœˆ" IsChecked="{Binding EspHeadCircleAI, Mode=TwoWay}" Margin="0,0,16,8" />
                     </WrapPanel>
                     <WrapPanel Margin="0,8,0,0">
-                        <TextBlock Text="±êÇ©Î»ÖÃ£¨AI/Ê°»ÄÕß£©£º" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="æ ‡ç­¾ä½ç½®ï¼ˆAI/æ‹¾è’è€…ï¼‰ï¼š" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <ComboBox Width="140"
                                   ItemsSource="{Binding LabelPositions}"
                                   SelectedItem="{Binding EspLabelPositionAI, Mode=TwoWay}"
-                                  ToolTip="Ñ¡ÔñAI/Ê°»ÄÕß±êÇ©Ïà¶ÔÓÚ±ß½ç¿òµÄ»æÖÆÎ»ÖÃ¡£"/>
+                                  ToolTip="é€‰æ‹©AI/æ‹¾è’è€…æ ‡ç­¾ç›¸å¯¹äºŽè¾¹ç•Œæ¡†çš„ç»˜åˆ¶ä½ç½®ã€‚"/>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="AI/Ê°»ÄÕßÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="AI/æ‹¾è’è€…é¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorAI, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Íæ¼ÒÊ°»ÄÕßÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="çŽ©å®¶æ‹¾è’è€…é¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorPlayerScavs, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="ÂÓ¶áÕßÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="æŽ å¤ºè€…é¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorRaiders, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="BossÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="Bossé¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorBosses, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
@@ -187,7 +187,7 @@
                         </StackPanel>
                     </WrapPanel>
                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="×î´ó¾àÀë£¨0 = ÎÞÏÞÖÆ£©£º" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="æœ€å¤§è·ç¦»ï¼ˆ0 = æ— é™åˆ¶ï¼‰ï¼š" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <Slider x:Name="AIDistanceSlider"
                                 Width="200"
                                 Margin="0,0,8,0"
@@ -196,39 +196,39 @@
                                 SmallChange="10"
                                 LargeChange="50"
                                 Value="{Binding EspAIMaxDistance, Mode=TwoWay}"/>
-                        <TextBlock Text="{Binding Value, ElementName=AIDistanceSlider, StringFormat='{}{0:F0}Ã×'}"
+                        <TextBlock Text="{Binding Value, ElementName=AIDistanceSlider, StringFormat='{}{0:F0}ç±³'}"
                                    VerticalAlignment="Center"
                                    MinWidth="50"/>
                     </WrapPanel>
-                    <TextBlock Text="Í·²¿Ô²È¦¼Ì³ÐÊµÌåÑÕÉ«£¨Íæ¼Ò¡¢Ê°»ÄÕß¡¢Í»Ï®Õß¡¢Ê×Áì£©¡£"
+                    <TextBlock Text="å¤´éƒ¨åœ†åœˆç»§æ‰¿å®žä½“é¢œè‰²ï¼ˆçŽ©å®¶ã€æ‹¾è’è€…ã€çªè¢­è€…ã€é¦–é¢†ï¼‰ã€‚"
                                Foreground="Gray"
                                FontSize="10"
                                Margin="0,8,0,0"/>
                 </StackPanel>
             </GroupBox>
 
-            <GroupBox Header="Õ½ÀûÆ·¡¢³·Àëµã¼°±¬Õ¨Îï" Margin="0,0,0,12">
+            <GroupBox Header="æˆ˜åˆ©å“ã€æ’¤ç¦»ç‚¹åŠçˆ†ç‚¸ç‰©" Margin="0,0,0,12">
                 <StackPanel>
                     <WrapPanel>
-                        <CheckBox Content="ÏÔÊ¾Õ½ÀûÆ·" IsChecked="{Binding EspLoot, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÏÔÊ¾¼Û¸ñ" IsChecked="{Binding EspLootPrice, Mode=TwoWay}" Margin="0,0,16,8" IsEnabled="{Binding EspLoot}" />
-                        <CheckBox Content="ÏÔÊ¾³·Àëµã" IsChecked="{Binding EspExfils, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÏÔÊ¾°íÏß" IsChecked="{Binding EspTripwires, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÏÔÊ¾ÊÖÁñµ¯" IsChecked="{Binding EspGrenades, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="Õ½ÀûÆ·×¶ÐÎ¹ýÂË"
+                        <CheckBox Content="æ˜¾ç¤ºæˆ˜åˆ©å“" IsChecked="{Binding EspLoot, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ˜¾ç¤ºä»·æ ¼" IsChecked="{Binding EspLootPrice, Mode=TwoWay}" Margin="0,0,16,8" IsEnabled="{Binding EspLoot}" />
+                        <CheckBox Content="æ˜¾ç¤ºæ’¤ç¦»ç‚¹" IsChecked="{Binding EspExfils, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ˜¾ç¤ºç»Šçº¿" IsChecked="{Binding EspTripwires, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ˜¾ç¤ºæ‰‹æ¦´å¼¹" IsChecked="{Binding EspGrenades, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æˆ˜åˆ©å“é”¥å½¢è¿‡æ»¤"
                                   IsChecked="{Binding EspLootConeEnabled, Mode=TwoWay}"
                                   Margin="0,0,16,8" />
                     </WrapPanel>
                     <WrapPanel Margin="0,4,0,0">
-                        <CheckBox Content="ÏÔÊ¾Ê³Îï" IsChecked="{Binding EspFood, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÏÔÊ¾Ò©Æ·" IsChecked="{Binding EspMeds, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÏÔÊ¾±³°ü" IsChecked="{Binding EspBackpacks, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÏÔÊ¾ÈÎÎñÎïÆ·" IsChecked="{Binding EspQuestLoot, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÏÔÊ¾Ê¬Ìå" IsChecked="{Binding EspCorpses, Mode=TwoWay}" Margin="0,0,16,8" />
-                        <CheckBox Content="ÏÔÊ¾ÈÝÆ÷" IsChecked="{Binding EspContainers, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ˜¾ç¤ºé£Ÿç‰©" IsChecked="{Binding EspFood, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ˜¾ç¤ºè¯å“" IsChecked="{Binding EspMeds, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ˜¾ç¤ºèƒŒåŒ…" IsChecked="{Binding EspBackpacks, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ˜¾ç¤ºä»»åŠ¡ç‰©å“" IsChecked="{Binding EspQuestLoot, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ˜¾ç¤ºå°¸ä½“" IsChecked="{Binding EspCorpses, Mode=TwoWay}" Margin="0,0,16,8" />
+                        <CheckBox Content="æ˜¾ç¤ºå®¹å™¨" IsChecked="{Binding EspContainers, Mode=TwoWay}" Margin="0,0,16,8" />
                     </WrapPanel>
                     <WrapPanel Margin="0,4,0,0" IsEnabled="{Binding EspContainers}">
-                        <TextBlock Text="ÈÝÆ÷¾àÀë£¨ESP£©"
+                        <TextBlock Text="å®¹å™¨è·ç¦»ï¼ˆESPï¼‰"
                                    VerticalAlignment="Center" />
                         <Slider x:Name="EspContainerDistanceSlider"
                                 Width="150"
@@ -243,7 +243,7 @@
                                    Margin="8,0,0,0" />
                     </WrapPanel>
                     <WrapPanel Margin="0,4,0,0" IsEnabled="{Binding EspLootConeEnabled}">
-                        <TextBlock Text="×¶ÐÎ½Ç¶È"
+                        <TextBlock Text="é”¥å½¢è§’åº¦"
                                    VerticalAlignment="Center" />
                         <Slider x:Name="LootConeSlider"
                                 Width="150"
@@ -258,7 +258,7 @@
                                    Margin="8,0,0,0" />
                     </WrapPanel>
                     <WrapPanel Margin="0,4,0,0">
-                        <TextBlock Text="×î´ó¾àÀë£¨0 = ÎÞÏÞÖÆ£©£º" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="æœ€å¤§è·ç¦»ï¼ˆ0 = æ— é™åˆ¶ï¼‰ï¼š" VerticalAlignment="Center" Margin="0,0,8,0"/>
                         <Slider x:Name="LootDistanceSlider"
                                 Width="200"
                                 Margin="0,0,8,0"
@@ -267,39 +267,39 @@
                                 SmallChange="10"
                                 LargeChange="50"
                                 Value="{Binding EspLootMaxDistance, Mode=TwoWay}"/>
-                        <TextBlock Text="{Binding Value, ElementName=LootDistanceSlider, StringFormat='{}{0:F0}Ã×'}"
+                        <TextBlock Text="{Binding Value, ElementName=LootDistanceSlider, StringFormat='{}{0:F0}ç±³'}"
                                    VerticalAlignment="Center"
                                    MinWidth="50"/>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="Õ½ÀûÆ·ÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="æˆ˜åˆ©å“é¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorLoot, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="ÈÝÆ÷ÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="å®¹å™¨é¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorContainers, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="³·ÀëµãÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="æ’¤ç¦»ç‚¹é¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorExfil, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="°íÏßÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="ç»Šçº¿é¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorTripwire, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
                                               ShowRecentColors="False"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                            <TextBlock Text="ÊÖÁñµ¯ÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                            <TextBlock Text="æ‰‹æ¦´å¼¹é¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                             <xctk:ColorPicker Width="42" Height="26"
                                               SelectedColor="{Binding EspColorGrenade, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                               UsingAlphaChannel="True"
@@ -309,12 +309,12 @@
                 </StackPanel>
             </GroupBox>
 
-            <!-- ÔÓÏîÉèÖÃ -->
-            <GroupBox Header="ÔÓÏî"
+            <!-- æ‚é¡¹è®¾ç½® -->
+            <GroupBox Header="æ‚é¡¹"
                       Margin="0,0,0,12">
                 <StackPanel>
                     <StackPanel Margin="0,0,0,8">
-                        <TextBlock Text="ESP×î´óÖ¡ÂÊ£¨0 = ÎÞÏÞÖÆ / Ä¬ÈÏ144£©£º"
+                        <TextBlock Text="ESPæœ€å¤§å¸§çŽ‡ï¼ˆ0 = æ— é™åˆ¶ / é»˜è®¤144ï¼‰ï¼š"
                                    VerticalAlignment="Center" />
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
                             <Slider x:Name="EspFpsSlider"
@@ -330,20 +330,20 @@
                                        VerticalAlignment="Center"
                                        Margin="8,0,0,0" />
                         </StackPanel>
-                        <TextBlock Text="0 = ÎÞÏÞÖÆ£¨Ä¬ÈÏ144£©¡£½ÏµÍÖµ¿É½ÚÊ¡CPU/GPU×ÊÔ´¡£"
+                        <TextBlock Text="0 = æ— é™åˆ¶ï¼ˆé»˜è®¤144ï¼‰ã€‚è¾ƒä½Žå€¼å¯èŠ‚çœCPU/GPUèµ„æºã€‚"
                                    Foreground="Gray"
                                    FontSize="10"
                                    Margin="0,2,0,0" />
                     </StackPanel>
 
 
-                    <CheckBox Content="×¼ÐÇ"
-                                  ToolTip="ÔÚESP´°¿ÚÖÐÐÄÏÔÊ¾¼òµ¥×¼ÐÇ¡£"
+                    <CheckBox Content="å‡†æ˜Ÿ"
+                                  ToolTip="åœ¨ESPçª—å£ä¸­å¿ƒæ˜¾ç¤ºç®€å•å‡†æ˜Ÿã€‚"
                                   IsChecked="{Binding EspCrosshair, Mode=TwoWay}"
                                   Margin="0,0,16,8" />
 
                     <WrapPanel Margin="0,4,0,0" IsEnabled="{Binding EspCrosshair}">
-                        <TextBlock Text="×¼ÐÇ³¤¶È" VerticalAlignment="Center"/>
+                        <TextBlock Text="å‡†æ˜Ÿé•¿åº¦" VerticalAlignment="Center"/>
                         <Slider x:Name="CrosshairLengthSlider"
                                 Width="150"
                                 Margin="8,0"
@@ -358,7 +358,7 @@
                     </WrapPanel>
 
                     <StackPanel Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="×¼ÐÇÑÕÉ«£º" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="å‡†æ˜Ÿé¢œè‰²ï¼š" VerticalAlignment="Center" Margin="0,0,6,0"/>
                         <xctk:ColorPicker Width="42" Height="26"
                                           SelectedColor="{Binding EspColorCrosshair, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
                                           UsingAlphaChannel="True"

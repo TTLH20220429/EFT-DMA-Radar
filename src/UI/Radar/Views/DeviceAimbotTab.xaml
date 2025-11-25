@@ -1,4 +1,4 @@
-<UserControl x:Class="LoneEftDmaRadar.UI.Radar.Views.DeviceAimbotTab"
+﻿<UserControl x:Class="LoneEftDmaRadar.UI.Radar.Views.DeviceAimbotTab"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="clr-namespace:LoneEftDmaRadar.UI.Radar.ViewModels"

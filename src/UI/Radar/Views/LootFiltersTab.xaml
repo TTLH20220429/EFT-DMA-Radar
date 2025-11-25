@@ -57,7 +57,7 @@
             <Button Content="删除"
                     Command="{Binding DeleteFilterCommand}"
                     Margin="0,0,10,0" />
-            <TextBlock Text="Color:"
+            <TextBlock Text="颜色:"
                        VerticalAlignment="Center"
                        Margin="0,0,5,0" />
             <xctk:ColorPicker SelectedColor="{Binding CurrentFilterColor, Mode=TwoWay, Converter={StaticResource StringToColorConverter}}"
