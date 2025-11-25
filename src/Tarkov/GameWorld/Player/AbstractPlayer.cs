@@ -529,12 +529,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                                     bone.UpdatePosition(vertices.Span);
                                 }
                                 _skeletonErrorLogged = false;
-
-                                // Re-enable player after successful position update (in case it was disabled due to errors)
-                                if (!IsActive && IsAlive)
-                                {
-                                    IsActive = true;
-                                }
                             }
                             catch (ArgumentOutOfRangeException ex)
                             {
@@ -560,9 +554,8 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                                 }
                                 catch
                                 {
-                                    // If transform re-allocation also fails, we have stale data
-                                    // Mark as inactive to prevent rendering until next successful update
-                                    IsActive = false;
+                                    // If transform re-allocation also fails, we have stale skeleton data
+                                    // Don't mark as inactive - skeleton should be optional for ESP/radar
                                 }
                                 successPos = false;
                             }
