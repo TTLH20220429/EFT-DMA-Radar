@@ -38,16 +38,16 @@
                     <TabItem Header="物品过滤">
                         <tabs:LootFiltersTab x:Name="LootFilters"/>
                     </TabItem>
-                    <TabItem Header="Static Containers">
+                    <TabItem Header="静态容器">
                         <tabs:StaticContainersTab x:Name="StaticContainers" />
                     </TabItem>
-                    <TabItem Header="Hotkeys">
+                    <TabItem Header="热键">
                         <hotkeys:HotkeyManagerTab x:Name="HotkeyManager" />
                     </TabItem>
-                    <TabItem Header="Device Aimbot">
+                    <TabItem Header="鼠标盒子">
                         <tabs:DeviceAimbotTab x:Name="DeviceAimbot" />
                     </TabItem>
-                    <TabItem Header="MemWrites">
+                    <TabItem Header="内存写入">
                         <tabs:MemWritesTab x:Name="MemWrites" />
                     </TabItem>
                 </TabControl>

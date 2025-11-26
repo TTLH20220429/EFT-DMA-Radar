@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Lone EFT DMA Radar
  * Brought to you by Lone (Lone DMA)
  * 
@@ -83,38 +83,38 @@ namespace LoneEftDmaRadar
 
         private void LoadHotkeyManager()
         {
-            var zoomIn = new HotkeyActionController("Zoom In");
+            var zoomIn = new HotkeyActionController("雷达放大");
             zoomIn.Delay = HK_ZOOMTICKDELAY;
             zoomIn.HotkeyDelayElapsed += ZoomIn_HotkeyDelayElapsed;
-            var zoomOut = new HotkeyActionController("Zoom Out");
+            var zoomOut = new HotkeyActionController("雷达缩小");
             zoomOut.Delay = HK_ZOOMTICKDELAY;
             zoomOut.HotkeyDelayElapsed += ZoomOut_HotkeyDelayElapsed;
-            var toggleLoot = new HotkeyActionController("Toggle Loot");
+            var toggleLoot = new HotkeyActionController("开关雷达战利品");
             toggleLoot.HotkeyStateChanged += ToggleLoot_HotkeyStateChanged;
-            var toggleAimviewWidget = new HotkeyActionController("Toggle Aimview Widget");
+            var toggleAimviewWidget = new HotkeyActionController("开关自瞄范围显示");
             toggleAimviewWidget.HotkeyStateChanged += ToggleAimviewWidget_HotkeyStateChanged;
-            var toggleNames = new HotkeyActionController("Toggle Player Names");
+            var toggleNames = new HotkeyActionController("开关玩家名字显示");
             toggleNames.HotkeyStateChanged += ToggleNames_HotkeyStateChanged;
-            var toggleInfo = new HotkeyActionController("Toggle Game Info Tab");
+            var toggleInfo = new HotkeyActionController("开关对局信息显示");
             toggleInfo.HotkeyStateChanged += ToggleInfo_HotkeyStateChanged;
-            var toggleShowFood = new HotkeyActionController("Toggle Show Food");
+            var toggleShowFood = new HotkeyActionController("开关食品显示");
             toggleShowFood.HotkeyStateChanged += ToggleShowFood_HotkeyStateChanged;
-            var toggleShowMeds = new HotkeyActionController("Toggle Show Meds");
+            var toggleShowMeds = new HotkeyActionController("开关药物显示");
             toggleShowMeds.HotkeyStateChanged += ToggleShowMeds_HotkeyStateChanged;
-            var engageAimbotDeviceAimbot = new HotkeyActionController("Engage Aimbot");
+            var engageAimbotDeviceAimbot = new HotkeyActionController("开关自瞄");
             engageAimbotDeviceAimbot.HotkeyStateChanged += EngageAimbotDeviceAimbot_HotkeyStateChanged;
-            var toggleDeviceAimbotEnabled = new HotkeyActionController("Toggle Device Aimbot");
+            var toggleDeviceAimbotEnabled = new HotkeyActionController("开关盒子连接");
             toggleDeviceAimbotEnabled.HotkeyStateChanged += ToggleDeviceAimbotEnabled_HotkeyStateChanged;
             
-            var toggleESP = new HotkeyActionController("Toggle ESP Overlay");
+            var toggleESP = new HotkeyActionController("开关ESP绘制");
             toggleESP.HotkeyStateChanged += ToggleESP_HotkeyStateChanged;
-            var toggleESPPlayers = new HotkeyActionController("Toggle ESP Players");
+            var toggleESPPlayers = new HotkeyActionController("开关ESP 玩家绘制");
             toggleESPPlayers.HotkeyStateChanged += ToggleESPPlayers_HotkeyStateChanged;
-            var toggleESPScavs = new HotkeyActionController("Toggle ESP Scavs/AI");
+            var toggleESPScavs = new HotkeyActionController("开关Scav/AI 绘制");
             toggleESPScavs.HotkeyStateChanged += ToggleESPScavs_HotkeyStateChanged;
-            var toggleESPLoot = new HotkeyActionController("Toggle ESP Loot");
+            var toggleESPLoot = new HotkeyActionController("开关ESP 物品绘制");
             toggleESPLoot.HotkeyStateChanged += ToggleESPLoot_HotkeyStateChanged;
-            var toggleESPExfils = new HotkeyActionController("Toggle ESP Exfils");
+            var toggleESPExfils = new HotkeyActionController("开关ESP 撤离点绘制");
             toggleESPExfils.HotkeyStateChanged += ToggleESPExfils_HotkeyStateChanged;
             
             // Add to Static Collection:

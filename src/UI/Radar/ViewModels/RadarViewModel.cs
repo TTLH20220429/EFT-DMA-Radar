@@ -526,7 +526,7 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
         {
             string map = EftMapManager.Map?.Config?.Name;
             string name = map is null ?
-                "Radar" : $"Radar ({map})";
+                "雷达" : $"雷达 ({map})";
             if (MainWindow.Instance?.RadarTab is TabItem tab)
             {
                 tab.Header = name;
