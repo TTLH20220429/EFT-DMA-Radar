@@ -1,4 +1,5 @@
 ﻿using LoneEftDmaRadar.Tarkov.Unity.Collections;
+using LoneEftDmaRadar.UI.Misc;
 using LoneEftDmaRadar.Web.TarkovDev.Data;
 using System.Collections.Frozen;
 
@@ -58,7 +59,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Error initializing Player Equipment for '{_player.Name}': {ex}");
+                    DebugLogger.LogDebug($"Error initializing Player Equipment for '{_player.Name}': {ex}");
                 }
                 finally
                 {

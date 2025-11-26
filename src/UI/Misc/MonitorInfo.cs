@@ -92,7 +92,7 @@ namespace LoneEftDmaRadar.UI.Misc
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine($"Error getting monitor info: {ex}");
+                            DebugLogger.LogDebug($"Error getting monitor info: {ex}");
                         }
 
                         return true;
@@ -101,7 +101,7 @@ namespace LoneEftDmaRadar.UI.Misc
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error enumerating monitors: {ex}");
+                DebugLogger.LogDebug($"Error enumerating monitors: {ex}");
             }
 
             if (monitors.Count == 0)
