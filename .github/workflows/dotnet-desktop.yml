@@ -87,6 +87,39 @@ jobs:
             --targetCommitish "${{ github.sha }}" `
             --token "$env:GITHUB_TOKEN"
 
+      - name: Generate Changelog
+        id: changelog
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the previous release tag
+          $previousTag = gh release list --limit 1 --json tagName --jq '.[0].tagName'
+
+          if ($previousTag) {
+            Write-Host "Previous tag: $previousTag"
+            # Get commits since last release
+            $commits = git log "$previousTag..HEAD" --pretty=format:"- %s (%h)" --no-merges
+          } else {
+            Write-Host "No previous release found, showing last 10 commits"
+            # If no previous release, show last 10 commits
+            $commits = git log -10 --pretty=format:"- %s (%h)" --no-merges
+          }
+
+          if ([string]::IsNullOrWhiteSpace($commits)) {
+            $commits = "- ${{ github.event.head_commit.message }}"
+          }
+
+          # Escape quotes and newlines for JSON
+          $commits = $commits -replace '"', '\"' -replace "`r`n", "\n" -replace "`n", "\n"
+
+          # Set output - truncate if too long (Discord has a 1024 char limit per field)
+          if ($commits.Length -gt 900) {
+            $commits = $commits.Substring(0, 900) + "\n... (truncated)"
+          }
+
+          echo "CHANGELOG=$commits" >> $env:GITHUB_OUTPUT
+
       - name: Send Discord Release Notification
         shell: pwsh
         env:
@@ -94,7 +127,7 @@ jobs:
           REPO: ${{ github.repository }}
           RELEASE_URL: https://github.com/${{ github.repository }}/releases/tag/v${{ steps.nbgv.outputs.SemVer2 }}
           DOWNLOAD_URL: https://github.com/${{ github.repository }}/releases/download/v${{ steps.nbgv.outputs.SemVer2 }}/github.lonedma.eft-${{ steps.nbgv.outputs.SemVer2 }}-win-x64.zip
-          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          CHANGELOG: ${{ steps.changelog.outputs.CHANGELOG }}
         run: |
           $payload = @{
             username = "GitHub Actions"
@@ -113,8 +146,8 @@ jobs:
                     value = "[View on GitHub]($env:RELEASE_URL)"
                   },
                   @{
-                    name  = "📝 Latest Changes"
-                    value = $env:COMMIT_MESSAGE
+                    name  = "📝 Changes"
+                    value = $env:CHANGELOG
                   }
                 )
                 timestamp = (Get-Date -Format "o")
