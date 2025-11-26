@@ -27,8 +27,8 @@ SOFTWARE.
 */
 
 using Collections.Pooled;
-using LoneEftDmaRadar.Tarkov.Unity.Collections;
 using LoneEftDmaRadar.Tarkov.Unity;
+using LoneEftDmaRadar.Tarkov.Unity.Collections;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
 using LoneEftDmaRadar.UI.Loot;
 using LoneEftDmaRadar.UI.Misc;
@@ -49,9 +49,9 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers
         public IReadOnlyList<LootItem> FilteredLoot { get; private set; }
 
         /// <summary>
-        /// All Static Containers on the map.
+        /// All unfiltered loot.
         /// </summary>
-        public IEnumerable<StaticLootContainer> StaticContainers => _loot.Values.OfType<StaticLootContainer>();
+        public IEnumerable<LootItem> AllLoot => _loot.Values;
 
         public LootManager(ulong localGameWorld)
         {
@@ -74,6 +74,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers
                 {
                     var filter = LootFilter.Create();
                     FilteredLoot = _loot.Values?
+                        .OfType<LootItem>()
                         .Where(x => filter(x))
                         .OrderByDescending(x => x.Important)
                         .ThenByDescending(x => x?.Price ?? 0)
@@ -112,7 +113,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers
         #region Private Methods
 
         /// <summary>
-        /// Updates referenced Loot List with fresh values.
+        /// Updates referenced FilteredLoot List with fresh values.
         /// </summary>
         private void GetLoot(CancellationToken ct)
         {
@@ -204,6 +205,13 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers
                 };
             }
             map.Execute(); // execute scatter read
+            // Post Scatter Read - Sync Corpses
+            var deadPlayers = Memory.Players?
+                .Where(x => x.Corpse is not null)?.ToList();
+            foreach (var corpse in _loot.Values.OfType<LootCorpse>())
+            {
+                corpse.Sync(deadPlayers);
+            }
         }
 
         /// <summary>
@@ -226,7 +234,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers
                 var pos = new UnityTransform(p.TransformInternal, true).UpdatePosition();
                 if (isCorpse)
                 {
-                    var corpse = new LootCorpse(pos);
+                    var corpse = new LootCorpse(interactiveClass, pos);
                     _ = _loot.TryAdd(p.ItemBase, corpse);
                 }
                 if (isContainer)
@@ -256,11 +264,23 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot.Helpers
                     var item = Memory.ReadPtr(interactiveClass + Offsets.InteractiveLootItem.Item); //EFT.InventoryLogic.Item
                     var itemTemplate = Memory.ReadPtr(item + Offsets.LootItem.Template); //EFT.InventoryLogic.ItemTemplate
                     var isQuestItem = Memory.ReadValue<bool>(itemTemplate + Offsets.ItemTemplate.QuestItem);
+
                     var mongoId = Memory.ReadValue<MongoID>(itemTemplate + Offsets.ItemTemplate._id);
                     var id = mongoId.ReadString();
-                    if (TarkovDataManager.AllItems.TryGetValue(id, out var entry))
+                    if (isQuestItem)
                     {
-                        _ = _loot.TryAdd(p.ItemBase, new LootItem(entry, pos, isQuestItem));
+                         var shortNamePtr = Memory.ReadPtr(itemTemplate + Offsets.ItemTemplate.ShortName);
+                        var shortName = Memory.ReadUnicodeString(shortNamePtr, 128);
+                        DebugLogger.LogDebug(shortName);
+                        _ = _loot.TryAdd(p.ItemBase, new LootItem(id, $"Q_{shortName}", pos));
+                    }
+                    else
+                    {
+                        //If NOT a quest item. Quest items are like the quest related things you need to find like the pocket watch or Jaeger's Letter etc. We want to ignore these quest items.
+                        if (TarkovDataManager.AllItems.TryGetValue(id, out var entry))
+                        {
+                            _ = _loot.TryAdd(p.ItemBase, new LootItem(entry, pos));
+                        }
                     }
                 }
             }

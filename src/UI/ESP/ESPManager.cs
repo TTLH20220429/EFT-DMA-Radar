@@ -106,6 +106,7 @@ namespace LoneEftDmaRadar.UI.ESP
         public static void ApplyResolutionOverride()
         {
             if (!_isInitialized || _espWindow is null) return;
+            CameraManagerNew.UpdateViewportRes();
             _espWindow.ApplyResolutionOverride();
         }
 

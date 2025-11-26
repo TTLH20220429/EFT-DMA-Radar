@@ -67,19 +67,40 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Camera
         {
             lock (_viewportSync)
             {
-                var width = App.Config.UI.EspScreenWidth > 0
-                    ? App.Config.UI.EspScreenWidth
-                    : (int)App.Config.UI.Resolution.Width;
-                var height = App.Config.UI.EspScreenHeight > 0
-                    ? App.Config.UI.EspScreenHeight
-                    : (int)App.Config.UI.Resolution.Height;
-                
+                int width, height;
+
+                if (App.Config.UI.EspScreenWidth > 0 && App.Config.UI.EspScreenHeight > 0)
+                {
+                    // Use manual override
+                    width = App.Config.UI.EspScreenWidth;
+                    height = App.Config.UI.EspScreenHeight;
+                }
+                else
+                {
+                    // Use selected monitor resolution
+                    var targetMonitor = MonitorInfo.GetMonitor(App.Config.UI.EspTargetScreen);
+                    if (targetMonitor != null)
+                    {
+                        width = targetMonitor.Width;
+                        height = targetMonitor.Height;
+                        DebugLogger.LogDebug($"[CameraManager] Using target monitor {targetMonitor.Index} resolution: {width}x{height}");
+                    }
+                    else
+                    {
+                        // Fallback to game resolution
+                        width = (int)App.Config.UI.Resolution.Width;
+                        height = (int)App.Config.UI.Resolution.Height;
+                        DebugLogger.LogDebug($"[CameraManager] Falling back to game resolution: {width}x{height}");
+                    }
+                }
+
                 if (width <= 0 || height <= 0)
                 {
                     width = 1920;
                     height = 1080;
+                    DebugLogger.LogDebug($"[CameraManager] Invalid resolution, using fallback: {width}x{height}");
                 }
-                
+
                 Viewport = new Rectangle(0, 0, width, height);
                 DebugLogger.LogDebug($"[CameraManager] Viewport updated to {width}x{height}");
             }

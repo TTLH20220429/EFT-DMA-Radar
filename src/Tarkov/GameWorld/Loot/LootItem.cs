@@ -141,39 +141,9 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
         /// </summary>
         public bool Blacklisted => CustomFilter?.Blacklisted ?? false;
 
-        public bool IsMeds
-        {
-            get
-            {
-                if (this is LootContainer container)
-                {
-                    return container.Loot.Values.Any(x => x.IsMeds);
-                }
-                return _item.IsMed;
-            }
-        }
-        public bool IsFood
-        {
-            get
-            {
-                if (this is LootContainer container)
-                {
-                    return container.Loot.Values.Any(x => x.IsFood);
-                }
-                return _item.IsFood;
-            }
-        }
-        public bool IsBackpack
-        {
-            get
-            {
-                if (this is LootContainer container)
-                {
-                    return container.Loot.Values.Any(x => x.IsBackpack);
-                }
-                return _item.IsBackpack;
-            }
-        }
+        public bool IsMeds => _item.IsMed;
+        public bool IsFood => _item.IsFood;
+        public bool IsBackpack => _item.IsBackpack;
         public bool IsWeapon => _item.IsWeapon;
         public bool IsCurrency => _item.IsCurrency;
 
@@ -186,10 +156,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
             {
                 if (Blacklisted)
                     return false;
-                if (this is LootContainer container)
-                {
-                    return container.Loot.Values.Any(x => x.IsRegularLoot);
-                }
                 return Price >= App.Config.Loot.MinValue;
             }
         }
@@ -203,10 +169,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
             {
                 if (Blacklisted)
                     return false;
-                if (this is LootContainer container)
-                {
-                    return container.Loot.Values.Any(x => x.IsValuableLoot);
-                }
                 return Price >= App.Config.Loot.MinValueValuable;
             }
         }
@@ -220,10 +182,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
             {
                 if (Blacklisted)
                     return false;
-                if (this is LootContainer container)
-                {
-                    return container.Loot.Values.Any(x => x.IsImportant);
-                }
                 return _item.Important || IsWishlisted;
             }
         }
@@ -235,10 +193,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
         /// <returns>True if search matches, otherwise False.</returns>
         public bool ContainsSearchPredicate(Predicate<LootItem> predicate)
         {
-            if (this is LootContainer container)
-            {
-                return container.Loot.Values.Any(x => x.ContainsSearchPredicate(predicate));
-            }
             return predicate(this);
         }
 
@@ -295,47 +249,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
 
         public virtual void DrawMouseover(SKCanvas canvas, EftMapParams mapParams, LocalPlayer localPlayer)
         {
-            if (this is LootContainer container)
-            {
-                using var lines = new PooledList<string>();
-                var loot = container.FilteredLoot;
-                if (container is LootCorpse corpse) // Draw corpse loot
-                {
-                    var corpseLoot = corpse.Loot?.Values?.OrderLoot();
-                    var sumPrice = corpseLoot?.Sum(x => x.Price) ?? 0;
-                    var corpseValue = Utilities.FormatNumberKM(sumPrice);
-                    var playerObj = corpse.Player;
-                    if (playerObj is not null)
-                    {
-                        var name = App.Config.UI.HideNames && playerObj.IsHuman ? "<Hidden>" : playerObj.Name;
-                        lines.Add($"{playerObj.Type.ToString()}:{name}");
-                        string g = null;
-                        if (playerObj.GroupID != -1) g = $"G:{playerObj.GroupID} ";
-                        if (g is not null) lines.Add(g);
-                        lines.Add($"Value: {corpseValue}");
-                    }
-                    else
-                    {
-                        lines.Add($"{corpse.Name} (Value:{corpseValue})");
-                    }
-
-                    if (corpseLoot?.Any() == true)
-                        foreach (var item in corpseLoot)
-                            lines.Add(item.GetUILabel());
-                    else lines.Add("Empty");
-                }
-                else if (loot is not null && loot.Count() > 1) // draw regular container loot
-                {
-                    foreach (var item in loot)
-                        lines.Add(item.GetUILabel());
-                }
-                else
-                {
-                    return; // Don't draw single items
-                }
-
-                Position.ToMapPos(mapParams.Map).ToZoomedPos(mapParams).DrawMouseoverText(canvas, lines.Span);
-            }
         }
 
         /// <summary>
@@ -345,31 +258,11 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
         public string GetUILabel()
         {
             var label = "";
-            if (this is LootContainer container)
-            {
-                var important = container.Loot.Values.Any(x => x.IsImportant);
-                var loot = container.FilteredLoot;
-                if (loot.Count() == 1)
-                {
-                    var firstItem = loot.First();
-                    label = firstItem.ShortName;
-                }
-                else
-                {
-                    label = container.Name;
-                }
-
-                if (important)
-                    label = $"!!{label}";
-            }
-            else
-            {
-                if (IsImportant)
-                    label += "!!";
-                else if (Price > 0)
-                    label += $"[{Utilities.FormatNumberKM(Price)}] ";
-                label += ShortName;
-            }
+            if (IsImportant)
+                label += "!!";
+            else if (Price > 0)
+                label += $"[{Utilities.FormatNumberKM(Price)}] ";
+            label += ShortName;
 
             if (string.IsNullOrEmpty(label))
                 label = "Item";
@@ -388,15 +281,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
                 return new(SKPaints.PaintMeds, SKPaints.TextMeds);
             if (LootFilter.ShowFood && IsFood)
                 return new(SKPaints.PaintFood, SKPaints.TextFood);
-            string filterColor = null;
-            if (this is LootContainer ctr)
-            {
-                filterColor = ctr.Loot?.Values?.FirstOrDefault(x => x.Important)?.CustomFilter?.Color;
-            }
-            else
-            {
-                filterColor = CustomFilter?.Color;
-            }
+            var filterColor = CustomFilter?.Color;
 
             if (!string.IsNullOrEmpty(filterColor))
             {

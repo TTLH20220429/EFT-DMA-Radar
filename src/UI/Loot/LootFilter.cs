@@ -75,10 +75,6 @@ namespace LoneEftDmaRadar.UI.Loot
                     }
                     if (p(item))
                     {
-                        if (item is LootContainer container)
-                        {
-                            container.SetFilter(p);
-                        }
                         return true;
                     }
                     return false;
@@ -99,10 +95,6 @@ namespace LoneEftDmaRadar.UI.Loot
                     }
                     if (item.ContainsSearchPredicate(p))
                     {
-                        if (item is LootContainer container)
-                        {
-                            container.SetFilter(p);
-                        }
                         return true;
                     }
                     return false;

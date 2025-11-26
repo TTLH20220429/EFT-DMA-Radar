@@ -169,16 +169,18 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
             ArgumentOutOfRangeException.ThrowIfNotEqual(this, Memory.ReadValue<ulong>(ObservedPlayerController + Offsets.ObservedPlayerController.PlayerView), nameof(ObservedPlayerController));
             InventoryControllerAddr = ObservedPlayerController + Offsets.ObservedPlayerController.InventoryController;
             ObservedHealthController = Memory.ReadPtr(ObservedPlayerController + Offsets.ObservedPlayerController.HealthController);
-            ArgumentOutOfRangeException.ThrowIfNotEqual(this, Memory.ReadValue<ulong>(ObservedHealthController + Offsets.ObservedHealthController.Player), nameof(ObservedHealthController));
-            CorpseAddr = ObservedHealthController + Offsets.ObservedHealthController.PlayerCorpse;
+            ArgumentOutOfRangeException.ThrowIfNotEqual(this, Memory.ReadValue<ulong>(ObservedHealthController + Offsets.ObservedHealthController._player), nameof(ObservedHealthController));
+            CorpseAddr = ObservedHealthController + Offsets.ObservedHealthController._playerCorpse;
 
             MovementContext = GetMovementContext();
             RotationAddress = ValidateRotationAddr(MovementContext + Offsets.ObservedPlayerStateContext.Rotation);
             /// Setup Transform
             var ti = Memory.ReadPtrChain(this, false, _transformInternalChain);
             SkeletonRoot = new UnityTransform(ti);
-            _ = SkeletonRoot.UpdatePosition();
+            var initialPos = SkeletonRoot.UpdatePosition();
             SetupBones();
+            // Initialize cached position for fallback (in case skeleton updates fail later)
+            _cachedPosition = initialPos;
 
             bool isAI = Memory.ReadValue<bool>(this + Offsets.ObservedPlayerView.IsAI);
             IsHuman = !isAI;

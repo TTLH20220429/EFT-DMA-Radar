@@ -48,9 +48,9 @@
 
                     <WrapPanel Margin="0,4,0,0">
                         <TextBlock Text="分辨率覆盖（0 = 自动）：" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBox Width="50" Text="{Binding EspScreenWidth, Mode=TwoWay}" Margin="0,0,8,0" ToolTip="宽度（例如：1920）"/>
-                        <TextBlock Text="×" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                        <TextBox Width="50" Text="{Binding EspScreenHeight, Mode=TwoWay}" Margin="0,0,16,0" ToolTip="高度（例如：1080）"/>
+                        <TextBox Width="65" Text="{Binding EspScreenWidth, Mode=TwoWay}" Margin="0,0,8,0" ToolTip="宽度 (例如. 1920, 2560). 输入0则自动选择."/>
+                        <TextBlock Text="x" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Width="65" Text="{Binding EspScreenHeight, Mode=TwoWay}" Margin="0,0,16,0" ToolTip="高度 (例如. 1080, 1440). 输入0则自动选择."/>
                     </WrapPanel>
 
                     <GroupBox Header="文本样式" Margin="0,8,0,0">

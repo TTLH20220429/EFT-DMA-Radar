@@ -224,11 +224,18 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
         public PlayerSkeleton Skeleton { get; protected set; }
         protected int _verticesCount;
         private bool _skeletonErrorLogged;
+        protected Vector3 _cachedPosition; // Fallback position cache
 
         /// <summary>
         /// TRUE if critical memory reads (position/rotation) have failed.
         /// </summary>
         public bool IsError { get; set; }
+
+        /// <summary>
+        /// Timer to track how long player has been in error state.
+        /// Used to trigger re-allocation if errors persist.
+        /// </summary>
+        public Stopwatch ErrorTimer { get; } = new Stopwatch();
 
         /// <summary>
         /// True if player is being focused via Right-Click (UI).
@@ -238,7 +245,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
         /// <summary>
         /// Dead Player's associated loot container object.
         /// </summary>
-        public LootContainer LootObject { get; set; }
+        public LootCorpse LootObject { get; set; }
         /// <summary>
         /// Alerts for this Player Object.
         /// Used by Player History UI Interop.
@@ -511,29 +518,59 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
 
                                 if (available < required)
                                 {
-                                    if (!_skeletonErrorLogged)
+                                    // Try to recover by re-creating the skeleton root transform
+                                    try
                                     {
-                                        DebugLogger.LogDebug($"Skipping skeleton update for Player '{Name ?? "Unknown"}': vertices {available} < required {required}");
-                                        _skeletonErrorLogged = true;
+                                        if (!_skeletonErrorLogged)
+                                        {
+                                            DebugLogger.LogDebug($"Attempting skeleton recovery for Player '{Name ?? "Unknown"}': vertices {available} < required {required}");
+                                            _skeletonErrorLogged = true;
+                                        }
+                                        // Re-create the skeleton root transform (might have been invalidated)
+                                        SkeletonRoot = new UnityTransform(SkeletonRoot.TransformInternal);
+                                        // Recalculate requirements with fresh transform
+                                        required = SkeletonRoot.Count;
+                                        foreach (var bone in PlayerBones.Values)
+                                        {
+                                            if (bone.Count > required)
+                                                required = bone.Count;
+                                        }
+                                        // If still not enough, give up for this frame
+                                        if (available < required)
+                                        {
+                                            _verticesCount = 0; // force re-request next loop
+                                            successPos = false;
+                                            return;
+                                        }
+                                        // Recovery successful, continue with update
+                                        _skeletonErrorLogged = false;
                                     }
-                                    _verticesCount = 0; // force re-request next loop
-                                    successPos = false;
-                                    return;
+                                    catch
+                                    {
+                                        _verticesCount = 0; // force re-request next loop
+                                        successPos = false;
+                                        return;
+                                    }
                                 }
 
                                 _verticesCount = available;
 
-                                _ = SkeletonRoot.UpdatePosition(vertices.Span);
-                                foreach (var bone in PlayerBones.Values)
+                                // Validate position before updating
+                                var newPos = SkeletonRoot.UpdatePosition(vertices.Span);
+                                if (newPos == Vector3.Zero || float.IsNaN(newPos.X) || float.IsInfinity(newPos.X))
                                 {
-                                    bone.UpdatePosition(vertices.Span);
+                                    // Invalid position - don't update bones, keep previous position
+                                    successPos = false;
                                 }
-                                _skeletonErrorLogged = false;
-
-                                // Re-enable player after successful position update (in case it was disabled due to errors)
-                                if (!IsActive && IsAlive)
+                                else
                                 {
-                                    IsActive = true;
+                                    foreach (var bone in PlayerBones.Values)
+                                    {
+                                        bone.UpdatePosition(vertices.Span);
+                                    }
+                                    _skeletonErrorLogged = false;
+                                    // Update cached position for fallback
+                                    _cachedPosition = newPos;
                                 }
                             }
                             catch (ArgumentOutOfRangeException ex)
@@ -560,9 +597,8 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                                 }
                                 catch
                                 {
-                                    // If transform re-allocation also fails, we have stale data
-                                    // Mark as inactive to prevent rendering until next successful update
-                                    IsActive = false;
+                                    // If transform re-allocation also fails, we have stale skeleton data
+                                    // Don't mark as inactive - skeleton should be optional for ESP/radar
                                 }
                                 successPos = false;
                             }
@@ -574,7 +610,22 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                     }
                 }
 
-                IsError = !successRot || !successPos;
+                bool hasError = !successRot || !successPos;
+
+                // Track error state with timer
+                if (hasError && !IsError)
+                {
+                    // Error just started
+                    ErrorTimer.Restart();
+                }
+                else if (!hasError && IsError)
+                {
+                    // Error cleared
+                    ErrorTimer.Stop();
+                    ErrorTimer.Reset();
+                }
+
+                IsError = hasError;
             };
         }
 
@@ -806,7 +857,20 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
 
         #region Interfaces
 
-        public virtual ref readonly Vector3 Position => ref SkeletonRoot.Position;
+        public virtual ref readonly Vector3 Position
+        {
+            get
+            {
+                var skeletonPos = SkeletonRoot.Position;
+                // Use skeleton position if valid, otherwise fall back to cached position
+                if (skeletonPos != Vector3.Zero && !float.IsNaN(skeletonPos.X) && !float.IsInfinity(skeletonPos.X))
+                {
+                    _cachedPosition = skeletonPos; // Update cache
+                    return ref SkeletonRoot.Position;
+                }
+                return ref _cachedPosition;
+            }
+        }
         public Vector2 MouseoverPosition { get; set; }
 
         public void Draw(SKCanvas canvas, EftMapParams mapParams, LocalPlayer localPlayer)
@@ -1002,17 +1066,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                 if (GroupID != -1)
                     g = $"G:{GroupID} ";
                 if (g is not null) lines.Add(g);
-                var corpseLoot = LootObject?.Loot?.Values?.OrderLoot();
-                if (corpseLoot is not null)
-                {
-                    var sumPrice = corpseLoot.Sum(x => x.Price);
-                    var corpseValue = Utilities.FormatNumberKM(sumPrice);
-                    lines.Add($"Value: {corpseValue}"); // Player name, value
-                    if (corpseLoot.Any())
-                        foreach (var item in corpseLoot)
-                            lines.Add(item.GetUILabel());
-                    else lines.Add("Empty");
-                }
             }
             else if (IsAIActive)
             {
@@ -1101,17 +1154,28 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
         /// Get Bone Position (if available).
         /// </summary>
         /// <param name="bone">Bone Index.</param>
-        /// <returns>World Position of Bone.</returns>
+        /// <returns>World Position of Bone, or SkeletonRoot position as fallback.</returns>
         public Vector3 GetBonePos(Bones bone)
         {
             try
             {
                 if (PlayerBones.TryGetValue(bone, out var boneTransform))
-                    return boneTransform.Position;
+                {
+                    var pos = boneTransform.Position;
+                    // Validate the position is reasonable (not zero, not NaN/Infinity)
+                    if (pos != Vector3.Zero && !float.IsNaN(pos.X) && !float.IsInfinity(pos.X))
+                        return pos;
+                }
             }
             catch { }
 
-            return Vector3.Zero;
+            // Fallback to skeleton root position instead of zero
+            // This prevents players from "teleporting" to the origin
+            var rootPos = SkeletonRoot?.Position ?? Vector3.Zero;
+            if (rootPos != Vector3.Zero && !float.IsNaN(rootPos.X) && !float.IsInfinity(rootPos.X))
+                return rootPos;
+
+            return Position; // Ultimate fallback to cached position
         }
 
         #endregion

@@ -89,8 +89,10 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
             /// Setup Transform
             var ti = Memory.ReadPtrChain(this, false, _transformInternalChain);
             SkeletonRoot = new UnityTransform(ti);
-            _ = SkeletonRoot.UpdatePosition();
+            var initialPos = SkeletonRoot.UpdatePosition();
             SetupBones();
+            // Initialize cached position for fallback (in case skeleton updates fail later)
+            _cachedPosition = initialPos;
         }
 
         public int GetPoseLevel()

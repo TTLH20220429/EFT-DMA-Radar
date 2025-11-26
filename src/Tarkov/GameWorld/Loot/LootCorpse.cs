@@ -1,7 +1,7 @@
-﻿/*
+/*
  * Lone EFT DMA Radar
  * Brought to you by Lone (Lone DMA)
- * 
+ *
 MIT License
 
 Copyright (c) 2025 Lone DMA
@@ -26,26 +26,104 @@ SOFTWARE.
  *
 */
 
+using Collections.Pooled;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
+using LoneEftDmaRadar.UI.Radar.Maps;
+using LoneEftDmaRadar.UI.Radar.ViewModels;
+using LoneEftDmaRadar.UI.Skia;
+using LoneEftDmaRadar.Web.TarkovDev.Data;
 
 namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
 {
-    public sealed class LootCorpse : LootContainer
+    public sealed class LootCorpse : LootItem
     {
+        private static readonly TarkovMarketItem _default = new();
+        private readonly ulong _corpse;
         /// <summary>
         /// Corpse container's associated player object (if any).
         /// </summary>
-        public AbstractPlayer Player { get; private set; }
-        /// <summary>
-        /// Name of the corpse.
-        /// </summary>
-        public override string Name => Player?.Name ?? "Body";
+        public AbstractPlayer Player { get; set; }
+
+        public override string Name => Player?.Name ?? "Corpse";
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public LootCorpse(Vector3 position) : base(position)
+        public LootCorpse(ulong corpse, Vector3 position) : base(_default, position)
         {
+            _corpse = corpse;
+        }
+
+        /// <summary>
+        /// Sync the corpse's player reference from a list of dead players.
+        /// </summary>
+        /// <param name="deadPlayers"></param>
+        public void Sync(IReadOnlyList<AbstractPlayer> deadPlayers)
+        {
+            Player ??= deadPlayers?.FirstOrDefault(x => x.Corpse == _corpse);
+            if (Player is not null && Player.LootObject is null)
+                Player.LootObject = this;
+        }
+
+        public override void Draw(SKCanvas canvas, EftMapParams mapParams, LocalPlayer localPlayer)
+        {
+            var heightDiff = Position.Y - localPlayer.Position.Y;
+            var point = Position.ToMapPos(mapParams.Map).ToZoomedPos(mapParams);
+            MouseoverPosition = new Vector2(point.X, point.Y);
+            SKPaints.ShapeOutline.StrokeWidth = 2f;
+            if (heightDiff > 1.45) // loot is above player
+            {
+                using var path = point.GetUpArrow(5);
+                canvas.DrawPath(path, SKPaints.ShapeOutline);
+                canvas.DrawPath(path, SKPaints.PaintCorpse);
+            }
+            else if (heightDiff < -1.45) // loot is below player
+            {
+                using var path = point.GetDownArrow(5);
+                canvas.DrawPath(path, SKPaints.ShapeOutline);
+                canvas.DrawPath(path, SKPaints.PaintCorpse);
+            }
+            else // loot is level with player
+            {
+                var size = 5 * App.Config.UI.UIScale;
+                canvas.DrawCircle(point, size, SKPaints.ShapeOutline);
+                canvas.DrawCircle(point, size, SKPaints.PaintCorpse);
+            }
+
+            point.Offset(7 * App.Config.UI.UIScale, 3 * App.Config.UI.UIScale);
+
+            canvas.DrawText(
+                Name,
+                point,
+                SKTextAlign.Left,
+                SKFonts.UIRegular,
+                SKPaints.TextOutline); // Draw outline
+            canvas.DrawText(
+                Name,
+                point,
+                SKTextAlign.Left,
+                SKFonts.UIRegular,
+                SKPaints.TextCorpse);
+        }
+
+        public override void DrawMouseover(SKCanvas canvas, EftMapParams mapParams, LocalPlayer localPlayer)
+        {
+            if (App.Config.Loot.HideCorpses)
+                return;
+            using var lines = new PooledList<string>();
+            if (Player is AbstractPlayer player)
+            {
+                var name = App.Config.UI.HideNames && player.IsHuman ? "<Hidden>" : player.Name;
+                lines.Add($"{player.Type.ToString()}:{name}");
+                string g = null;
+                if (player.GroupID != -1) g = $"G:{player.GroupID} ";
+                if (g is not null) lines.Add(g);
+            }
+            else
+            {
+                lines.Add(Name);
+            }
+            Position.ToMapPos(mapParams.Map).ToZoomedPos(mapParams).DrawMouseoverText(canvas, lines.Span);
         }
     }
 }

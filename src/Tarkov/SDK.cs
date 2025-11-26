@@ -79,10 +79,10 @@ namespace SDK
 
         public readonly partial struct ObservedPlayerController
         {
-            public const uint PlayerView = 0x18; // EFT.NextObservedPlayer.ObservedPlayerView
-            public const uint MovementController = 0xD8; // -.\uED4F
-            public const uint HealthController = 0xE8; // -.\uE446
             public const uint InventoryController = 0x10; // EFT.NextObservedPlayer.ObservedPlayerInventoryController
+            public const uint PlayerView = 0x18; // EFT.NextObservedPlayer.ObservedPlayerView
+            public const uint MovementController = 0xD8; // EFT.NextObservedPlayer.ObservedPlayerMovementController
+            public const uint HealthController = 0xE8; // ObservedPlayerHealthController
         }
 
         public readonly partial struct ObservedPlayerStateContext
@@ -90,11 +90,11 @@ namespace SDK
             public const uint Rotation = 0x20; // UnityEngine.Vector2
         }
 
-        public readonly partial struct ObservedHealthController
+          public readonly partial struct ObservedHealthController
         {
-            public const uint Player = 0x18; // EFT.NextObservedPlayer.ObservedPlayerView
-            public const uint PlayerCorpse = 0x20; // EFT.Interactive.ObservedCorpse
-            public const uint HealthStatus = 0x10; // System.Int32
+            public const uint HealthStatus = 0x10; // ETagStatus
+            public const uint _player = 0x18; // EFT.NextObservedPlayer.ObservedPlayerView
+            public const uint _playerCorpse = 0x20; // EFT.Interactive.ObservedCorpse
         }
 
         public readonly partial struct Profile

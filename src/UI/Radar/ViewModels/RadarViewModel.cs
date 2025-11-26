@@ -87,7 +87,7 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
         /// <summary>
         /// All Static Containers on the map.
         /// </summary>
-        private static IEnumerable<StaticLootContainer> Containers => Memory?.Loot?.StaticContainers;
+        private static IEnumerable<StaticLootContainer> Containers => Memory?.Loot?.AllLoot?.OfType<StaticLootContainer>();
 
         /// <summary>
         /// All Players in Local Game World (including dead/exfil'd) 'Player' collection.
@@ -696,8 +696,13 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
                             : (int?)null;
                         break;
 
-                    case LootContainer ctr:
+                    case StaticLootContainer ctr:
                         _mouseOverItem = ctr;
+                        MouseoverGroup = null;
+                        break;
+
+                    case LootAirdrop airdrop:
+                        _mouseOverItem = airdrop;
                         MouseoverGroup = null;
                         break;
 
