@@ -438,68 +438,35 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Camera
             {
                 IsADS = localPlayer?.CheckIfADS() ?? false;
                 IsScoped = IsADS && CheckIfScoped(localPlayer);
-
-                // Log when ADS or Scoped state changes
-                if (IsADS != _lastADSState || IsScoped != _lastScopedState)
-                {
-                    DebugLogger.LogInfo($"CameraManager: State Changed - IsADS={IsADS}, IsScoped={IsScoped}, OpticCamera={(OpticCamera != 0 ? "Available" : "NOT FOUND")}");
-                    _lastADSState = IsADS;
-                    _lastScopedState = IsScoped;
-                }
-
-                ulong activeMatrixAddress = (IsADS && IsScoped) ? _opticMatrixAddress : _fpsMatrixAddress;
-                ulong activeCamera = (IsADS && IsScoped) ? OpticCamera : FPSCamera;
-                ActiveCameraPtr = activeCamera;
-
-                scatter.PrepareReadValue<Matrix4x4>(activeMatrixAddress + UnitySDK.UnityOffsets.Camera_ViewMatrixOffset);
-
-                // Read FOV/Aspect from the active camera (OpticCamera when scoped, FPSCamera otherwise)
-                if (IsScoped)
-                {
-                    scatter.PrepareReadValue<float>(OpticCamera + UnitySDK.UnityOffsets.Camera_FOVOffset);
-                    scatter.PrepareReadValue<float>(OpticCamera + UnitySDK.UnityOffsets.Camera_AspectRatioOffset);
-                }
-
+                ulong vmAddr = IsADS && IsScoped ? OpticCamera + UnitySDK.UnityOffsets.Camera_ViewMatrixOffset : FPSCamera + UnitySDK.UnityOffsets.Camera_ViewMatrixOffset;
+                scatter.PrepareReadValue<Matrix4x4>(vmAddr);
                 scatter.Completed += (sender, s) =>
                 {
-                    try
+                    if (s.ReadValue<Matrix4x4>(vmAddr, out var vm))
                     {
-                        // Read results when scatter completes
-                        if (s.ReadValue<Matrix4x4>(activeMatrixAddress + UnitySDK.UnityOffsets.Camera_ViewMatrixOffset, out var vm))
-                        {
+                        if (!Unsafe.IsNullRef(ref vm))
                             _viewMatrix.Update(ref vm);
-                        }
-
-                        if (IsScoped)
-                        {
-                            if (s.ReadValue<float>(OpticCamera + UnitySDK.UnityOffsets.Camera_FOVOffset, out var fov))
-                                _fov = fov;
-
-                            if (s.ReadValue<float>(OpticCamera + UnitySDK.UnityOffsets.Camera_AspectRatioOffset, out var aspect))
-                                _aspect = aspect;
-
-                            // Periodic debug logging
-                            _updateCounter++;
-                            if (_updateCounter % 300 == 0)
-                            {
-                                DebugLogger.LogDebug($"CameraManager: SCOPED (PiP) - Using OpticCamera, FOV={_fov:F2}, Aspect={_aspect:F3}");
-                            }
-                        }
-                        else
-                        {
-                            // Log when not scoped occasionally
-                            _updateCounter++;
-                            if (_updateCounter % 300 == 0 && IsADS)
-                            {
-                                DebugLogger.LogDebug($"CameraManager: ADS (non-scoped) - Using FPS Camera");
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        DebugLogger.LogDebug($"ERROR in CameraManager scatter callback: {ex}");
                     }
                 };
+
+              
+                if (IsScoped)
+                {
+                    var fovAddr = FPSCamera + UnitySDK.UnityOffsets.Camera_FOVOffset;
+                    var aspectAddr = FPSCamera + UnitySDK.UnityOffsets.Camera_AspectRatioOffset;
+
+                    scatter.PrepareReadValue<float>(fovAddr); // FOV
+                    scatter.PrepareReadValue<float>(aspectAddr); // Aspect
+
+                    scatter.Completed += (sender, s) =>
+                    {
+                        if (s.ReadValue<float>(fovAddr, out var fov))
+                            _fov = fov;
+
+                        if (s.ReadValue<float>(aspectAddr, out var aspect))
+                            _aspect = aspect;
+                    };
+                }
             }
             catch (Exception ex)
             {
