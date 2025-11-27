@@ -45,7 +45,6 @@ namespace LoneEftDmaRadar.UI.ColorPicker
         DeathMarker,
         RegularLoot,
         ValuableLoot,
-        WishlistLoot,
         ContainerLoot,
         MedsFilterLoot,
         FoodFilterLoot,

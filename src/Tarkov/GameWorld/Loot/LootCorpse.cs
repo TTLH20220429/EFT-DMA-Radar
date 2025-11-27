@@ -27,9 +27,9 @@ SOFTWARE.
 */
 
 using Collections.Pooled;
+using LoneEftDmaRadar.Misc;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.UI.Radar.Maps;
-using LoneEftDmaRadar.UI.Radar.ViewModels;
 using LoneEftDmaRadar.UI.Skia;
 using LoneEftDmaRadar.Web.TarkovDev.Data;
 
@@ -108,8 +108,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
 
         public override void DrawMouseover(SKCanvas canvas, EftMapParams mapParams, LocalPlayer localPlayer)
         {
-            if (App.Config.Loot.HideCorpses)
-                return;
             using var lines = new PooledList<string>();
             if (Player is AbstractPlayer player)
             {
@@ -118,6 +116,15 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
                 string g = null;
                 if (player.GroupID != -1) g = $"G:{player.GroupID} ";
                 if (g is not null) lines.Add(g);
+
+                if (Player is ObservedPlayer obs) // show equipment info
+                {
+                    lines.Add($"Value: {Utilities.FormatNumberKM(obs.Equipment.Value)}");
+                    foreach (var item in obs.Equipment.Items.OrderBy(e => e.Key))
+                    {
+                        lines.Add($"{item.Key.Substring(0, 5)}: {item.Value.ShortName}");
+                    }
+                }
             }
             else
             {

@@ -238,6 +238,27 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
         public Stopwatch ErrorTimer { get; } = new Stopwatch();
 
         /// <summary>
+        /// Reset a specific bone transform using its internal address.
+        /// From Pre-1.0 fork
+        /// </summary>
+        /// <param name="bone">The bone to reset</param>
+        private void ResetBoneTransform(Bones bone)
+        {
+            try
+            {
+                if (PlayerBones.TryGetValue(bone, out var boneTransform))
+                {
+                    DebugLogger.LogDebug($"Resetting transform for bone '{bone}' for Player '{Name ?? "Unknown"}'");
+                    PlayerBones[bone] = new UnityTransform(boneTransform.TransformInternal);
+                }
+            }
+            catch (Exception ex)
+            {
+                DebugLogger.LogDebug($"Failed to reset bone '{bone}' transform for Player '{Name ?? "Unknown"}': {ex}");
+            }
+        }
+
+        /// <summary>
         /// True if player is being focused via Right-Click (UI).
         /// </summary>
         public bool IsFocused { get; set; }
@@ -295,6 +316,11 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
         /// Player Rotation Field Address (view angles).
         /// </summary>
         public virtual ulong RotationAddress { get; }
+
+        /// <summary>
+        /// Hands Controller address.
+        /// </summary>
+        protected ulong HandsController { get; set; }
 
         #endregion
 
@@ -488,16 +514,70 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
         /// <param name="index">Scatter read index dedicated to this player.</param>
         public virtual void OnRealtimeLoop(VmmScatter scatter)
         {
+            if (SkeletonRoot == null)
+            {
+                IsError = true;
+                return;
+            }
+
+            int vertexCount = SkeletonRoot.Count;
+
+            // Calculate actual vertex requirements including all bones
+            int maxBoneRequirement = 0;
+            foreach (var bone in PlayerBones.Values)
+            {
+                if (bone.Count > maxBoneRequirement)
+                    maxBoneRequirement = bone.Count;
+            }
+
+            int actualRequired = Math.Max(vertexCount, maxBoneRequirement);
+
+            if (actualRequired <= 0 || actualRequired > 10000)
+            {
+                try
+                {
+                    DebugLogger.LogDebug($"Invalid vertex count detected for '{Name}': {actualRequired} (skeleton: {vertexCount}, bones: {maxBoneRequirement})");
+
+                    // Resetting all bone transforms
+                    foreach (var bone in PlayerBones.Keys.ToList())
+                    {
+                        ResetBoneTransform(bone);
+                    }
+
+                    Skeleton = new PlayerSkeleton(SkeletonRoot, PlayerBones);
+                    DebugLogger.LogDebug($"Fast skeleton recovery for Player '{Name}' - vertexCount was {actualRequired}");
+
+                    vertexCount = SkeletonRoot.Count;
+                    maxBoneRequirement = 0;
+                    foreach (var bone in PlayerBones.Values)
+                    {
+                        if (bone.Count > maxBoneRequirement)
+                            maxBoneRequirement = bone.Count;
+                    }
+                    actualRequired = Math.Max(vertexCount, maxBoneRequirement);
+                }
+                catch (Exception ex)
+                {
+                    DebugLogger.LogDebug($"ERROR in fast skeleton recovery for '{Name}': {ex}");
+                }
+
+                // If still bad after recovery attempt, skip this frame
+                if (actualRequired <= 0 || actualRequired > 10000)
+                {
+                    IsError = true;
+                    _verticesCount = 0;
+                    return;
+                }
+            }
+
             scatter.PrepareReadValue<Vector2>(RotationAddress); // Rotation
-            int requestedVertices = _verticesCount > 0 ? _verticesCount : SkeletonRoot.Count;
+            int requestedVertices = _verticesCount > 0 ? _verticesCount : actualRequired;
             scatter.PrepareReadArray<TrsX>(SkeletonRoot.VerticesAddr, requestedVertices); // ESP Vertices
 
             scatter.Completed += (sender, s) =>
             {
-                bool successRot = false;
-                bool successPos = true;
-                if (s.ReadValue<Vector2>(RotationAddress, out var rotation))
-                    successRot = SetRotation(rotation);
+                bool successRot = s.ReadValue<Vector2>(RotationAddress, out var rotation) && SetRotation(rotation);
+                bool successPos = false;
 
                 if (s.ReadArray<TrsX>(SkeletonRoot.VerticesAddr, requestedVertices) is PooledMemory<TrsX> vertices)
                 {
@@ -505,128 +585,88 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                     {
                         try
                         {
-                            try
+                            if (vertices.Span.Length >= requestedVertices)
                             {
-                                // Ensure the buffer length matches or exceeds all tracked transforms
-                                int available = vertices.Span.Length;
-                                int required = SkeletonRoot.Count;
-                                foreach (var bone in PlayerBones.Values)
-                                {
-                                    if (bone.Count > required)
-                                        required = bone.Count;
-                                }
-
-                                if (available < required)
-                                {
-                                    // Try to recover by re-creating the skeleton root transform
-                                    try
-                                    {
-                                        if (!_skeletonErrorLogged)
-                                        {
-                                            DebugLogger.LogDebug($"Attempting skeleton recovery for Player '{Name ?? "Unknown"}': vertices {available} < required {required}");
-                                            _skeletonErrorLogged = true;
-                                        }
-                                        // Re-create the skeleton root transform (might have been invalidated)
-                                        SkeletonRoot = new UnityTransform(SkeletonRoot.TransformInternal);
-                                        // Recalculate requirements with fresh transform
-                                        required = SkeletonRoot.Count;
-                                        foreach (var bone in PlayerBones.Values)
-                                        {
-                                            if (bone.Count > required)
-                                                required = bone.Count;
-                                        }
-                                        // If still not enough, give up for this frame
-                                        if (available < required)
-                                        {
-                                            _verticesCount = 0; // force re-request next loop
-                                            successPos = false;
-                                            return;
-                                        }
-                                        // Recovery successful, continue with update
-                                        _skeletonErrorLogged = false;
-                                    }
-                                    catch
-                                    {
-                                        _verticesCount = 0; // force re-request next loop
-                                        successPos = false;
-                                        return;
-                                    }
-                                }
-
-                                _verticesCount = available;
-
-                                // Validate position before updating
-                                var newPos = SkeletonRoot.UpdatePosition(vertices.Span);
-                                if (newPos == Vector3.Zero || float.IsNaN(newPos.X) || float.IsInfinity(newPos.X))
-                                {
-                                    // Invalid position - don't update bones, keep previous position
-                                    successPos = false;
-                                }
-                                else
-                                {
-                                    foreach (var bone in PlayerBones.Values)
-                                    {
-                                        bone.UpdatePosition(vertices.Span);
-                                    }
-                                    _skeletonErrorLogged = false;
-                                    // Update cached position for fallback
-                                    _cachedPosition = newPos;
-                                }
-                            }
-                            catch (ArgumentOutOfRangeException ex)
-                            {
-                                if (!_skeletonErrorLogged)
-                                {
-                                    DebugLogger.LogDebug($"Skipping skeleton update for Player '{Name ?? "Unknown"}': {ex.Message}");
-                                    _skeletonErrorLogged = true;
-                                }
-                                successPos = false;
-                                return;
-                            }
-                            catch (Exception ex) // Attempt to re-allocate Transform on error
-                            {
-                                if (!_skeletonErrorLogged)
-                                {
-                                    DebugLogger.LogDebug($"ERROR getting Player '{Name}' SkeletonRoot Position: {ex}");
-                                    _skeletonErrorLogged = true;
-                                }
                                 try
                                 {
-                                    var transform = new UnityTransform(SkeletonRoot.TransformInternal);
-                                    SkeletonRoot = transform;
+                                    _ = SkeletonRoot.UpdatePosition(vertices.Span);
+                                    successPos = true;
                                 }
-                                catch
+                                catch (Exception ex)
                                 {
-                                    // If transform re-allocation also fails, we have stale skeleton data
-                                    // Don't mark as inactive - skeleton should be optional for ESP/radar
+                                    DebugLogger.LogDebug($"ERROR updating skeleton root for '{Name}': {ex}");
+                                    successPos = false;
+                                    return;
                                 }
+
+                                foreach (var bonePair in PlayerBones)
+                                {
+                                    try
+                                    {
+                                        if (bonePair.Value.Count <= vertices.Span.Length)
+                                        {
+                                            bonePair.Value.UpdatePosition(vertices.Span);
+                                        }
+                                        else
+                                        {
+                                            DebugLogger.LogDebug($"Bone '{bonePair.Key}' needs {bonePair.Value.Count} vertices but only {vertices.Span.Length} available for '{Name}'");
+                                            ResetBoneTransform(bonePair.Key);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        DebugLogger.LogDebug($"ERROR updating bone '{bonePair.Key}' for '{Name}': {ex}");
+                                        ResetBoneTransform(bonePair.Key);
+                                    }
+                                }
+
+                                _cachedPosition = SkeletonRoot.Position;
+
+                                if (_skeletonErrorLogged)
+                                {
+                                    DebugLogger.LogDebug($"Skeleton update successful for Player '{Name}'");
+                                    _skeletonErrorLogged = false;
+                                }
+                            }
+                            else
+                            {
+                                DebugLogger.LogDebug($"Insufficient vertices for '{Name}': got {vertices.Span.Length}, expected {requestedVertices}");
+                                _verticesCount = 0;
                                 successPos = false;
                             }
                         }
-                        catch
+                        catch (Exception ex)
                         {
+                            DebugLogger.LogDebug($"ERROR updating skeleton position for '{Name}': {ex}");
                             successPos = false;
                         }
                     }
                 }
+                else
+                {
+                    successPos = false;
+                }
 
                 bool hasError = !successRot || !successPos;
-
-                // Track error state with timer
                 if (hasError && !IsError)
                 {
-                    // Error just started
                     ErrorTimer.Restart();
                 }
                 else if (!hasError && IsError)
                 {
-                    // Error cleared
                     ErrorTimer.Stop();
                     ErrorTimer.Reset();
                 }
 
                 IsError = hasError;
             };
+        }
+
+        /// <summary>
+        /// Override this method to validate custom transforms.
+        /// </summary>
+        public virtual void OnValidateTransforms()
+        {
         }
 
         /// <summary>
@@ -652,6 +692,22 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
                                 var transform = new UnityTransform(SkeletonRoot.TransformInternal);
                                 SkeletonRoot = transform;
                                 _verticesCount = 0; // force fresh vertex count on next read
+
+                                // IMPORTANT: also rebuild all bone transforms and skeleton wrapper
+                                try
+                                {
+                                    foreach (var bone in PlayerBones.Keys.ToList())
+                                    {
+                                        ResetBoneTransform(bone);
+                                    }
+
+                                    Skeleton = new PlayerSkeleton(SkeletonRoot, PlayerBones);
+                                    DebugLogger.LogDebug($"Skeleton rebuilt for Player '{Name}'");
+                                }
+                                catch (Exception ex)
+                                {
+                                    DebugLogger.LogDebug($"ERROR rebuilding skeleton for '{Name}': {ex}");
+                                }
                             }
                         }
                     };
@@ -862,10 +918,9 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player
             get
             {
                 var skeletonPos = SkeletonRoot.Position;
-                // Use skeleton position if valid, otherwise fall back to cached position
                 if (skeletonPos != Vector3.Zero && !float.IsNaN(skeletonPos.X) && !float.IsInfinity(skeletonPos.X))
                 {
-                    _cachedPosition = skeletonPos; // Update cache
+                    _cachedPosition = skeletonPos;
                     return ref SkeletonRoot.Position;
                 }
                 return ref _cachedPosition;

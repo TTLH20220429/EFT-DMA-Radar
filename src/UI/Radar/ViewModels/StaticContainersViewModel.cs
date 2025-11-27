@@ -42,6 +42,16 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
                 entry.PropertyChanged += Entry_PropertyChanged;
                 StaticContainers.Add(entry);
             }
+
+            // If SelectAll is true but Selected dictionary is empty, populate it
+            // This ensures containers appear when SelectAll is unchecked
+            if (App.Config.Containers.SelectAll && App.Config.Containers.Selected.IsEmpty)
+            {
+                foreach (var entry in StaticContainers)
+                {
+                    App.Config.Containers.Selected.TryAdd(entry.Id, 0);
+                }
+            }
         }
 
         private void Entry_PropertyChanged(object sender, PropertyChangedEventArgs e)

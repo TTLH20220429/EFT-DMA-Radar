@@ -485,7 +485,7 @@ namespace LoneEftDmaRadar.UI.ESP
             if (!App.Config.Containers.Enabled)
                 return;
 
-            var containers = Memory.Game?.Loot?.AllLoot?.OfType<StaticLootContainer>();
+            var containers = Memory.Game?.Loot?.StaticContainers;
             if (containers is null)
                 return;
 

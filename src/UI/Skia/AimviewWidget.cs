@@ -26,6 +26,7 @@ SOFTWARE.
  *
 */
 
+using LoneEftDmaRadar.Tarkov.GameWorld.Loot;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers;
 using LoneEftDmaRadar.UI.Misc;
@@ -92,10 +93,10 @@ namespace LoneEftDmaRadar.UI.Skia
             targetCanvas.DrawBitmap(_bitmap, dest, SKPaints.PaintBitmap);
         }
 
-        private void UpdateMatrix(LocalPlayer lp)
+        private void UpdateMatrix(LocalPlayer localPlayer)
         {
-            float yaw = lp.Rotation.X * (MathF.PI / 180f);   // horizontal
-            float pitch = lp.Rotation.Y * (MathF.PI / 180f);   // vertical
+            float yaw = localPlayer.Rotation.X * (MathF.PI / 180f);   // horizontal
+            float pitch = localPlayer.Rotation.Y * (MathF.PI / 180f);   // vertical
 
             float cy = MathF.Cos(yaw);
             float sy = MathF.Sin(yaw);
@@ -116,7 +117,7 @@ namespace LoneEftDmaRadar.UI.Skia
 
             _up = -_up;
 
-            _camPos = lp.Position;
+            _camPos = localPlayer.LookPosition;
         }
 
         private void DrawPlayers(LocalPlayer localPlayer)
@@ -129,13 +130,12 @@ namespace LoneEftDmaRadar.UI.Skia
 
             float minRadius = 1.5f * App.Config.UI.UIScale;
             float maxRadius = 12f * App.Config.UI.UIScale;
-            const float scaleFactor = 2.0f;
 
             foreach (var player in players)
             {
                 if (WorldToScreen(in player.Position, out var screen))
                 {
-                    float distance = Vector3.Distance(localPlayer.Position, player.Position);
+                    float distance = Vector3.Distance(localPlayer.LookPosition, player.Position);
                     if (distance > App.Config.UI.MaxDistance)
                         continue;
 

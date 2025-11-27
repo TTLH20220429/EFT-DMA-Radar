@@ -932,12 +932,6 @@ namespace LoneEftDmaRadar
         [JsonPropertyName("priceMode")]
         public LootPriceMode PriceMode { get; set; } = LootPriceMode.FleaMarket;
 
-        /// <summary>
-        /// Show loot on the player's wishlist (manual only).
-        /// </summary>
-        [JsonPropertyName("showWishlist")]
-        public bool ShowWishlist { get; set; }
-
     }
 
     public sealed class ContainersConfig
