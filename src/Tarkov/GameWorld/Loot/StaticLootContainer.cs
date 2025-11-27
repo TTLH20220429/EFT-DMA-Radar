@@ -41,6 +41,11 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
         public override string Name { get; }
 
         /// <summary>
+        /// Container's BSG ID.
+        /// </summary>
+        public override string ID { get; }
+
+        /// <summary>
         /// True if the container has been searched by LocalPlayer or another Networked Entity.
         /// </summary>
         public bool Searched { get; private set; }
@@ -49,6 +54,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
             : base(_default, position)
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(containerId, nameof(containerId));
+            ID = containerId;
             if (TarkovDataManager.AllContainers.TryGetValue(containerId, out var containerData))
             {
                 Name = containerData.ShortName ?? "Container";

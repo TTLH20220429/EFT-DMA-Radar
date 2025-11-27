@@ -74,6 +74,11 @@ namespace LoneEftDmaRadar.UI.Loot
                     {
                         return true;
                     }
+                    if (item is StaticLootContainer container)
+                    {
+                        // Show if SelectAll is enabled OR if this specific container is selected
+                        return App.Config.Containers.SelectAll || App.Config.Containers.Selected.ContainsKey(container.ID);
+                    }
                     if (p(item))
                     {
                         return true;
@@ -93,6 +98,11 @@ namespace LoneEftDmaRadar.UI.Loot
                     if (item is LootAirdrop)
                     {
                         return true;
+                    }
+                    if (item is StaticLootContainer container)
+                    {
+                        // Show if SelectAll is enabled OR if this specific container is selected
+                        return App.Config.Containers.SelectAll || App.Config.Containers.Selected.ContainsKey(container.ID);
                     }
                     if (item.ContainsSearchPredicate(p))
                     {
