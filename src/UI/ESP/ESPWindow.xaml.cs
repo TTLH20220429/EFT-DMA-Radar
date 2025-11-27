@@ -497,7 +497,7 @@ namespace LoneEftDmaRadar.UI.ESP
             foreach (var container in containers)
             {
                 var id = container.ID ?? "UNKNOWN";
-                if (!selectAll && !selected.ContainsKey(id))
+                if (!(selectAll || selected.ContainsKey(id)))
                     continue;
 
                 float distance = Vector3.Distance(localPlayer.Position, container.Position);
