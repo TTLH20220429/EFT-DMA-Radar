@@ -126,6 +126,15 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Camera
                 float x = Vector3.Dot(_viewMatrix.Right, worldPos) + _viewMatrix.M14;
                 float y = Vector3.Dot(_viewMatrix.Up, worldPos) + _viewMatrix.M24;
 
+                if (IsScoped)
+                {
+                    float angleRadHalf = (MathF.PI / 180f) * _fov * 0.5f;
+                    float angleCtg = MathF.Cos(angleRadHalf) / MathF.Sin(angleRadHalf);
+
+                    x /= angleCtg * _aspect * 0.5f;
+                    y /= angleCtg * 0.5f;
+                }
+
                 var center = ViewportCenter;
                 scrPos = new()
                 {
