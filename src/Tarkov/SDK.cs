@@ -64,6 +64,7 @@ namespace SDK
             public const uint ProceduralWeaponAnimation = 0x330; // EFT.Animations.ProceduralWeaponAnimation
             public const uint _inventoryController = 0x950; // EFT.PlayerInventoryController update
             public const uint _handsController = 0x958; // EFT.PlayerHands update
+            public const uint _playerLookRaycastTransform = 0x9E0; // UnityEngine.Transform
         }
 
         public readonly partial struct ObservedPlayerView

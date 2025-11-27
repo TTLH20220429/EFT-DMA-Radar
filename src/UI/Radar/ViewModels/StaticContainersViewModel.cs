@@ -34,6 +34,16 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
 
         private void InitializeContainers()
         {
+            // If SelectAll is true but Selected dictionary is empty, populate it BEFORE creating entries
+            // This ensures containers appear when SelectAll is unchecked
+            if (App.Config.Containers.SelectAll && App.Config.Containers.Selected.IsEmpty)
+            {
+                foreach (var container in TarkovDataManager.AllContainers.Values)
+                {
+                    App.Config.Containers.Selected.TryAdd(container.BsgId, 0);
+                }
+            }
+
             var entries = TarkovDataManager.AllContainers.Values
                 .OrderBy(x => x.Name)
                 .Select(x => new StaticContainerEntry(x));

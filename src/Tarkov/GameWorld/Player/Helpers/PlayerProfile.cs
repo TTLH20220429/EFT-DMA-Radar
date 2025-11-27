@@ -39,6 +39,9 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers
         private void OnPropertyChanged(string name) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 
+        public bool IsEOD => MemberCategory is Enums.EMemberCategory mc && (mc & Enums.EMemberCategory.UniqueId) == Enums.EMemberCategory.UniqueId;
+        public bool IsUnheard => MemberCategory is Enums.EMemberCategory mc && (mc & Enums.EMemberCategory.Unheard) == Enums.EMemberCategory.Unheard;
+
         public PlayerProfile(ObservedPlayer player, string accountId)
         {
             _player = player ?? throw new ArgumentNullException(nameof(player));
@@ -104,9 +107,9 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers
 
             // --- Account Type ("UH", "EOD", or "--") ---
             var mc = MemberCategory ?? Enums.EMemberCategory.Default;
-            if ((mc & Enums.EMemberCategory.Unheard) == Enums.EMemberCategory.Unheard)
+            if (IsUnheard)
                 Acct = "UH";
-            else if ((mc & Enums.EMemberCategory.UniqueId) == Enums.EMemberCategory.UniqueId)
+            else if (IsEOD)
                 Acct = "EOD";
             else
                 Acct = "--";
@@ -124,7 +127,8 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers
             {
                 _player.IsFocused = true;
             }
-            else if (Hours is int hrs && hrs < 30) // Low hours played, could be a brand new cheater account
+            else if (Hours is int hrs && hrs < 30 &&
+                    !IsUnheard && !IsEOD) // Low hours played on std account, could be a brand new cheater account
             {
                 _player.IsFocused = true;
             }

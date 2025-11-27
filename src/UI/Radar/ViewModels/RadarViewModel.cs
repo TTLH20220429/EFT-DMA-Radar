@@ -87,7 +87,7 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
         /// <summary>
         /// All Static Containers on the map.
         /// </summary>
-        private static IEnumerable<StaticLootContainer> Containers => Memory?.Loot?.AllLoot?.OfType<StaticLootContainer>();
+        private static IEnumerable<StaticLootContainer> Containers => Memory?.Loot?.StaticContainers;
 
         /// <summary>
         /// All Players in Local Game World (including dead/exfil'd) 'Player' collection.
@@ -305,7 +305,7 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
                         .Where(x => !x.HasExfild); // Skip exfil'd players
                     if (App.Config.Loot.Enabled) // Draw loot (if enabled)
                     {
-                        if (Loot?.Reverse() is IEnumerable<LootItem> loot) // Draw important loot last (on top)
+                        if (Loot is IEnumerable<LootItem> loot)
                         {
                             foreach (var item in loot)
                             {

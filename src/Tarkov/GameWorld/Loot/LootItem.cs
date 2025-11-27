@@ -111,6 +111,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
             }
         }
 
+
         /// <summary>
         /// Number of grid spaces this item takes up.
         /// </summary>
@@ -125,11 +126,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
         /// True if the item is important via the UI.
         /// </summary>
         public bool Important => CustomFilter?.Important ?? false;
-
-        /// <summary>
-        /// True if this item is wishlisted.
-        /// </summary>
-        public bool IsWishlisted => Config.Loot.ShowWishlist && LocalPlayer.WishlistItems.Contains(ID);
 
         /// <summary>
         /// True if this item is marked as a quest item by the game data.
@@ -182,7 +178,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
             {
                 if (Blacklisted)
                     return false;
-                return _item.Important || IsWishlisted;
+                return _item.Important;
             }
         }
 
@@ -273,8 +269,6 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Loot
         {
             if (IsQuestItem)
                 return new(SKPaints.PaintQuestItem, SKPaints.TextQuestItem);
-            if (IsWishlisted)
-                return new(SKPaints.PaintWishlistItem, SKPaints.TextWishlistItem);
             if (LootFilter.ShowBackpacks && IsBackpack)
                 return new(SKPaints.PaintBackpacks, SKPaints.TextBackpacks);
             if (LootFilter.ShowMeds && IsMeds)

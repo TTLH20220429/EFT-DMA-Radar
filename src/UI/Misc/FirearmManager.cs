@@ -58,7 +58,7 @@ namespace LoneEftDmaRadar.UI.Misc
         {
             try
             {
-                var hands = LocalPlayer.HandsController;
+                var hands = _localPlayer.HandsController;
                 if (!MemDMA.IsValidVirtualAddress(hands))
                     return;
 

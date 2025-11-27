@@ -485,7 +485,7 @@ namespace LoneEftDmaRadar.UI.ESP
             if (!App.Config.Containers.Enabled)
                 return;
 
-            var containers = Memory.Game?.Loot?.AllLoot?.OfType<StaticLootContainer>();
+            var containers = Memory.Game?.Loot?.StaticContainers;
             if (containers is null)
                 return;
 
@@ -497,7 +497,7 @@ namespace LoneEftDmaRadar.UI.ESP
             foreach (var container in containers)
             {
                 var id = container.ID ?? "UNKNOWN";
-                if (!selectAll && !selected.ContainsKey(id))
+                if (!(selectAll || selected.ContainsKey(id)))
                     continue;
 
                 float distance = Vector3.Distance(localPlayer.Position, container.Position);

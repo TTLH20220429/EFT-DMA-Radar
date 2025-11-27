@@ -76,7 +76,7 @@ namespace LoneEftDmaRadar
         /// Path to the Configuration Folder in %AppData%
         /// </summary>
         public static DirectoryInfo ConfigPath { get; } =
-            new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Lone-EFT-DMA"));
+            new(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Moulman-EFT-DMA"));
         /// <summary>
         /// Global Program Configuration.
         /// </summary>
@@ -103,6 +103,7 @@ namespace LoneEftDmaRadar
                 _mutex = new Mutex(true, MUTEX_ID, out bool singleton);
                 if (!singleton)
                     throw new InvalidOperationException("The application is already running.");
+                MigrateOldConfig();
                 Config = EftDmaConfig.Load();
                 ServiceProvider = BuildServiceProvider();
                 HttpClientFactory = ServiceProvider.GetRequiredService<IHttpClientFactory>();
@@ -112,6 +113,49 @@ namespace LoneEftDmaRadar
             {
                 MessageBox.Show(ex.ToString(), Name, MessageBoxButton.OK, MessageBoxImage.Error);
                 throw;
+            }
+        }
+
+        /// <summary>
+        /// Migrates config from old "Lone-EFT-DMA" folder to new "Moulman-EFT-DMA" folder if needed.
+        /// </summary>
+        private static void MigrateOldConfig()
+        {
+            try
+            {
+                // Check if new config folder already exists
+                if (ConfigPath.Exists)
+                    return;
+
+                // Check if old config folder exists
+                var oldConfigPath = new DirectoryInfo(
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Lone-EFT-DMA"));
+
+                if (!oldConfigPath.Exists)
+                    return;
+
+                // Create new config directory
+                ConfigPath.Create();
+
+                // Copy all files from old to new location
+                foreach (var file in oldConfigPath.GetFiles("*", SearchOption.AllDirectories))
+                {
+                    var relativePath = Path.GetRelativePath(oldConfigPath.FullName, file.FullName);
+                    var targetPath = Path.Combine(ConfigPath.FullName, relativePath);
+                    var targetDir = Path.GetDirectoryName(targetPath);
+
+                    if (targetDir != null && !Directory.Exists(targetDir))
+                        Directory.CreateDirectory(targetDir);
+
+                    file.CopyTo(targetPath, overwrite: false);
+                }
+
+                DebugLogger.LogDebug($"Successfully migrated config from {oldConfigPath.FullName} to {ConfigPath.FullName}");
+            }
+            catch (Exception ex)
+            {
+                // Don't fail startup if migration fails - just log it
+                DebugLogger.LogDebug($"Config migration failed (non-critical): {ex.Message}");
             }
         }
         
@@ -156,7 +200,7 @@ namespace LoneEftDmaRadar
         private async Task ConfigureProgramAsync(LoadingWindow loadingWindow)
         {
             await loadingWindow.ViewModel.UpdateProgressAsync(15, "Loading, Please Wait...");
-            //_ = Task.Run(CheckForUpdatesAsync); // Run continuations on the thread pool
+            _ = Task.Run(CheckForUpdatesAsync); // Run continuations on the thread pool
             var tarkovDataManager = TarkovDataManager.ModuleInitAsync();
             var eftMapManager = EftMapManager.ModuleInitAsync();
             var memoryInterface = MemoryInterface.ModuleInitAsync();
@@ -224,44 +268,39 @@ namespace LoneEftDmaRadar
 
         private static async Task CheckForUpdatesAsync()
         {
-            //try
-            //{
-            //    var updater = new UpdateManager(
-            //        source: new GithubSource(
-            //            repoUrl: "https://github.com/lone-dma/Lone-EFT-DMA-Radar",
-            //            accessToken: null,
-            //            prerelease: false));
-            //    if (!updater.IsInstalled)
-            //        return;
+            try
+            {
+                var updater = new UpdateManager(
+                    source: new GithubSource(
+                        repoUrl: "https://github.com/moulmandev/EFT-DMA-Radar",
+                        accessToken: null,
+                        prerelease: false));
+                if (!updater.IsInstalled)
+                    return;
 
-            //    var newVersion = await updater.CheckForUpdatesAsync();
-            //    if (newVersion is not null)
-            //    {
-            //        var result = MessageBox.Show(
-            //            messageBoxText: $"A new version ({newVersion.TargetFullRelease.Version}) is available.\n\nWould you like to update now?",
-            //            caption: App.Name,
-            //            button: MessageBoxButton.YesNo,
-            //            icon: MessageBoxImage.Question,
-            //            defaultResult: MessageBoxResult.Yes,
-            //            options: MessageBoxOptions.DefaultDesktopOnly);
+                var newVersion = await updater.CheckForUpdatesAsync();
+                if (newVersion is not null)
+                {
+                    var result = MessageBox.Show(
+                        messageBoxText: $"A new version ({newVersion.TargetFullRelease.Version}) is available.\n\nWould you like to update now?",
+                        caption: App.Name,
+                        button: MessageBoxButton.YesNo,
+                        icon: MessageBoxImage.Question,
+                        defaultResult: MessageBoxResult.Yes,
+                        options: MessageBoxOptions.DefaultDesktopOnly);
 
-            //        if (result == MessageBoxResult.Yes)
-            //        {
-            //            await updater.DownloadUpdatesAsync(newVersion);
-            //            updater.ApplyUpdatesAndRestart(newVersion);
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(
-            //        messageBoxText: $"An unhandled exception occurred while checking for updates: {ex}",
-            //        caption: App.Name,
-            //        button: MessageBoxButton.OK,
-            //        icon: MessageBoxImage.Warning,
-            //        defaultResult: MessageBoxResult.OK,
-            //        options: MessageBoxOptions.DefaultDesktopOnly);
-            //}
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        await updater.DownloadUpdatesAsync(newVersion);
+                        updater.ApplyUpdatesAndRestart(newVersion);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Silently log update check failures - don't interrupt user experience
+                DebugLogger.LogDebug($"Update check failed: {ex.Message}");
+            }
         }
 
         [LibraryImport("kernel32.dll")]

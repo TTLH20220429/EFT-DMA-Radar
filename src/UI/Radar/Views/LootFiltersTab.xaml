@@ -92,7 +92,8 @@
         </StackPanel>
 
         <!-- 第2行：带内置颜色选择器的条目网格 -->
-        <DataGrid ItemsSource="{Binding Entries}"
+        <DataGrid x:Name="EntriesGrid"
+                  ItemsSource="{Binding Entries}"
                   AutoGenerateColumns="False"
                   Grid.Row="2"
                   Margin="5"
@@ -100,7 +101,15 @@
                   EnableColumnVirtualization="True"
                   ScrollViewer.CanContentScroll="True"
                   VirtualizingStackPanel.IsVirtualizing="True"
-                  VirtualizingStackPanel.VirtualizationMode="Recycling">
+                  VirtualizingStackPanel.VirtualizationMode="Recycling"
+                  KeyDown="EntriesGrid_KeyDown">
+
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Delete"
+                              Click="DeleteEntry_Click" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
 
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Header="启用"
