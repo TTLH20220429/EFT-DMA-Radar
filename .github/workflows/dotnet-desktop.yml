@@ -5,6 +5,7 @@ on:
     branches:
       - master
     paths:
+      - 'version.json'
       - 'Resources/**'
       - 'src/**'
   workflow_dispatch:
