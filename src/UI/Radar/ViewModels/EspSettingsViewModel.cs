@@ -688,6 +688,15 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
             }
         }
 
+        public int LootFilterPrice
+        {
+            get => App.Config.Loot.MinValue;
+            set
+            {
+                App.Config.Loot.MinValue = value;
+            }
+        }
+
         public string EspFontFamily
         {
             get => App.Config.UI.EspFontFamily;

@@ -17,7 +17,7 @@
     </d:Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="67*"/>
+            <ColumnDefinition Width="67"/>
             <ColumnDefinition Width="87*"/>
             <ColumnDefinition Width="1126*"/>
         </Grid.ColumnDefinitions>
@@ -33,7 +33,7 @@
                         <tabs:SettingsTab x:Name="Settings" />
                     </TabItem>
                     <TabItem Header="ESP 透视">
-                        <tabs:EspSettingsTab x:Name="EspSettings" />
+                        <tabs:EspSettingsTab x:Name="EspSettings" Margin="0,0,0,4" />
                     </TabItem>
                     <TabItem Header="物品过滤">
                         <tabs:LootFiltersTab x:Name="LootFilters"/>

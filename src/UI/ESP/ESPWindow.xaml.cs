@@ -1,3 +1,4 @@
+using LoneEftDmaRadar.DMA;
 using LoneEftDmaRadar.Misc;
 using LoneEftDmaRadar.Tarkov.GameWorld;
 using LoneEftDmaRadar.Tarkov.GameWorld.Exits;
@@ -6,23 +7,23 @@ using LoneEftDmaRadar.Tarkov.GameWorld.Loot;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player;
 using LoneEftDmaRadar.Tarkov.GameWorld.Player.Helpers;
 using LoneEftDmaRadar.Tarkov.Unity.Structures;
-using System.Drawing;
-using System.Linq;
-using System.Collections.Concurrent;
-using System.Windows.Input;
-using System.Windows.Threading;
-using LoneEftDmaRadar.UI.Skia;
 using LoneEftDmaRadar.UI.Misc;
-using LoneEftDmaRadar.DMA;
+using LoneEftDmaRadar.UI.Skia;
 using SharpDX;
 using SharpDX.Mathematics.Interop;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Forms.Integration;
-using WinForms = System.Windows.Forms;
 using SkiaSharp;
-using DxColor = SharpDX.Mathematics.Interop.RawColorBGRA;
+using System.Collections.Concurrent;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Forms.Integration;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
+using static VmmSharpEx.LeechCore;
 using CameraManagerNew = LoneEftDmaRadar.Tarkov.GameWorld.Camera.CameraManager;
+using DxColor = SharpDX.Mathematics.Interop.RawColorBGRA;
+using WinForms = System.Windows.Forms;
 
 namespace LoneEftDmaRadar.UI.ESP
 {
@@ -357,6 +358,7 @@ namespace LoneEftDmaRadar.UI.ESP
             if (lootItems is null) return;
 
             var camPos = localPlayer?.Position ?? Vector3.Zero;
+            int minValue = App.Config.Loot.MinValue;
 
             foreach (var item in lootItems)
             {
@@ -387,6 +389,10 @@ namespace LoneEftDmaRadar.UI.ESP
                 // Check distance to loot
                 float distance = Vector3.Distance(camPos, item.Position);
                 if (App.Config.UI.EspLootMaxDistance > 0 && distance > App.Config.UI.EspLootMaxDistance)
+                    continue;
+
+                //check min price
+                if (!item.IsRegularLoot)
                     continue;
 
                 if (WorldToScreen2(item.Position, out var screen, screenWidth, screenHeight))

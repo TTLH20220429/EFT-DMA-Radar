@@ -242,6 +242,21 @@
                                    VerticalAlignment="Center"
                                    Margin="8,0,0,0" />
                     </WrapPanel>
+                    <WrapPanel Margin="0,4,0,0">
+                        <TextBlock Text="价值过滤"
+                                   VerticalAlignment="Center" />
+                        <Slider x:Name="EspLootFilterPrice"
+                                Width="150"
+                                Margin="8,0"
+                                Minimum="0"
+                                Maximum="1000000"
+                                SmallChange="1"
+                                LargeChange="10"
+                                Value="{Binding LootFilterPrice, Mode=TwoWay}" />
+                        <TextBlock Text="{Binding Value, ElementName=EspLootFilterPrice, StringFormat=F0}"
+                                   VerticalAlignment="Center"
+                                   Margin="8,0,0,0" />
+                    </WrapPanel>
                     <WrapPanel Margin="0,4,0,0" IsEnabled="{Binding EspLootConeEnabled}">
                         <TextBlock Text="锥形角度"
                                    VerticalAlignment="Center" />
