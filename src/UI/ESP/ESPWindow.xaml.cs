@@ -368,8 +368,8 @@ namespace LoneEftDmaRadar.UI.ESP
                 if (isCorpse && !App.Config.UI.EspCorpses)
                     continue;
 
-                bool isContainer = item is StaticLootContainer or LootAirdrop;
-                if (isContainer && !App.Config.UI.EspContainers)
+                bool isContainer = item is StaticLootContainer;
+                if (isContainer)
                     continue;
 
                 bool isFood = item.IsFood;
@@ -452,6 +452,11 @@ namespace LoneEftDmaRadar.UI.ESP
                          circleColor = ToColor(SKPaints.PaintCorpse);
                          textColor = circleColor;
                      }
+                     else if (item is LootAirdrop)
+                     {
+                         circleColor = ToColor(SKPaints.PaintAirdrop);
+                         textColor = circleColor;
+                     }
 
                      ctx.DrawCircle(ToRaw(screen), 2f, circleColor, true);
 
@@ -462,6 +467,10 @@ namespace LoneEftDmaRadar.UI.ESP
                          {
                              var corpseName = corpse.Player?.Name;
                              text = string.IsNullOrWhiteSpace(corpseName) ? corpse.Name : corpseName;
+                         }
+                         else if (item is LootAirdrop)
+                         {
+                             text = "Airdrop";
                          }
                          else
                          {

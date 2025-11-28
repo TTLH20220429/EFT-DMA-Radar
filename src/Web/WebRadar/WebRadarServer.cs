@@ -116,6 +116,18 @@ namespace LoneEftDmaRadar.Web.WebRadar
             }
             catch
             {
+                // UPnP failed, try to get local network IP as fallback
+                try
+                {
+                    var host = Dns.GetHostEntry(Dns.GetHostName());
+                    var localIP = host.AddressList
+                        .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(ip));
+
+                    if (localIP != null)
+                        return localIP.ToString();
+                }
+                catch { }
+
                 return "127.0.0.1";
             }
         }

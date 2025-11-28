@@ -62,6 +62,16 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
                 await WebRadarServer.StartAsync(bindIP, port, tickRate, UpnpEnabled);
                 StartButtonText = "Running...";
                 ServerUrl = $"http://dc64dcid9fd4.cloudfront.net/?host={externalIP}&port={port}&password={Password}";
+
+                // Warn user if external IP detection failed
+                if (externalIP == "127.0.0.1")
+                {
+                    MessageBox.Show(MainWindow.Instance,
+                        "Warning: Could not detect external IP address.\n\n" +
+                        "The URL uses '127.0.0.1' which will only work locally.\n" +
+                        "For remote access, manually replace '127.0.0.1' with your external IP address in the URL.",
+                        "Web Radar", MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             catch (Exception ex)
             {

@@ -367,6 +367,14 @@ namespace LoneEftDmaRadar.UI.Skia
             IsAntialias = true,
         };
 
+        public static SKPaint PaintAirdrop { get; } = new()
+        {
+            Color = SKColors.Gold,
+            StrokeWidth = 0.25f,
+            Style = SKPaintStyle.Fill,
+            IsAntialias = true,
+        };
+
         public static SKPaint TextCorpse { get; } = new()
         {
             Color = SKColors.Silver,
