@@ -420,10 +420,14 @@ namespace LoneEftDmaRadar.UI.ESP
                      }
 
                      // Determine colors based on item type (default to user-selected loot color).
-                     DxColor circleColor = GetLootColorForRender();
-                     DxColor textColor = circleColor;
+                     //DxColor circleColor = GetLootColorForRender();
+                     //DxColor textColor = circleColor;
 
-                     if (isQuest)
+                    //Loot Item Dynamic Color
+                    DxColor circleColor = GetLootColorForPrice(item.Price);
+                    DxColor textColor = circleColor;
+
+                    if (isQuest)
                      {
                          circleColor = ToColor(SKPaints.PaintQuestItem);
                          textColor = circleColor;
@@ -1055,6 +1059,51 @@ namespace LoneEftDmaRadar.UI.ESP
         private DxColor GetGrenadeColorForRender() => ToColor(ColorFromHex(App.Config.UI.EspColorGrenade));
         private DxColor GetContainerColorForRender() => ToColor(ColorFromHex(App.Config.UI.EspColorContainers));
         private DxColor GetCrosshairColor() => ToColor(ColorFromHex(App.Config.UI.EspColorCrosshair));
+        private byte ClampByte(byte value) => value > 255 ? (byte)255 : (value < 0 ? (byte)0 : value);
+        private DxColor GetLootColorForPrice(int price) {
+            // >1M: pure red
+            if (price > 1000000) return new RawColorBGRA { B = 0, G = 0, R = 255, A = 255 };
+            // ¡Ü0: dark gray (low visibility)
+            if (price <= 0) return new RawColorBGRA { B = 100, G = 100, R = 100, A = 64 };
+
+            float ratio = 0f;
+            byte a = 64, r = 100, g = 100, b = 100;
+
+            // 0~150000: gray gradient (low visibility)
+            if (price <= 150000)
+            {
+                ratio = (float)price / 150000f;
+                a = (byte)(64 + ratio * 64);
+                r = g = b = (byte)(100 + ratio * 80);
+            }
+            // 150000~800000: green gradient (high visibility)
+            else if (price <= 800000)
+            {
+                ratio = (float)(price - 150000) / (800000 - 150000f);
+                a = 255;
+                r = (byte)(180 - ratio * 80);
+                g = (byte)(180 + ratio * 40);
+                b = (byte)(180 - ratio * 100);
+            }
+            // 800000~1000000: green¡úred gradient (high visibility)
+            else
+            {
+                ratio = (float)(price - 800000) / (1000000 - 800000f);
+                a = 255;
+                r = (byte)(100 + ratio * 155);
+                g = (byte)(220 - ratio * 170);
+                b = (byte)(80 - ratio * 80);
+            }
+
+            // Clamp to 0-255
+            a = ClampByte(a);
+            r = ClampByte(r);
+            g = ClampByte(g);
+            b = ClampByte(b);
+
+            return new RawColorBGRA { B = b, G = g, R = r, A = a };
+        }
+
 
         private static SKColor ColorFromHex(string hex)
         {
