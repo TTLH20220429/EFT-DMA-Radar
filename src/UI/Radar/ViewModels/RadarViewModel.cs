@@ -232,25 +232,29 @@ namespace LoneEftDmaRadar.UI.Radar.ViewModels
             var isReady = Ready;
             var inRaid = InRaid;
             var canvas = e.Surface.Canvas;
-            // FPS cap for radar rendering to free headroom for ESP.
+
+            // FPS cap for radar rendering - skip frames instead of blocking thread
             int maxFps = App.Config.UI.RadarMaxFPS;
             if (maxFps > 0)
             {
                 long now = Stopwatch.GetTimestamp();
                 double elapsedMs = (now - _lastRadarFrameTicks) * 1000.0 / Stopwatch.Frequency;
                 double targetMs = 1000.0 / maxFps;
-                double waitMs = targetMs - elapsedMs;
-                if (waitMs > 0)
+
+                if (elapsedMs < targetMs)
                 {
-                    Thread.Sleep((int)Math.Min(waitMs, 50)); // block briefly to align with target frame time
-                    now = Stopwatch.GetTimestamp();
+                    // Skip this frame - not enough time elapsed to maintain FPS cap
+                    // This prevents blocking the UI thread and allows ESP to render smoothly
+                    return;
                 }
+
                 _lastRadarFrameTicks = now;
             }
             else
             {
                 _lastRadarFrameTicks = Stopwatch.GetTimestamp();
             }
+
             // Begin draw
             try
             {
