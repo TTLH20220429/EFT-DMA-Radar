@@ -392,7 +392,9 @@ namespace LoneEftDmaRadar.UI.ESP
                     continue;
 
                 //check min price
-                if (!item.IsRegularLoot)
+                if (!item.IsRegularLoot && !isFood && !isMeds 
+                    && !isBackpack && !isCorpse && !(item is LootAirdrop)
+                    && !isQuest && !item.Important)
                     continue;
 
                 if (WorldToScreen2(item.Position, out var screen, screenWidth, screenHeight))
@@ -1069,26 +1071,26 @@ namespace LoneEftDmaRadar.UI.ESP
             float ratio = 0f;
             byte a = 64, r = 100, g = 100, b = 100;
 
-            // 0~150000: gray gradient (low visibility)
-            if (price <= 150000)
+            // 0~100000: gray gradient (low visibility)
+            if (price <= 100000)
             {
-                ratio = (float)price / 150000f;
+                ratio = (float)price / 100000f;
                 a = (byte)(64 + ratio * 64);
                 r = g = b = (byte)(100 + ratio * 80);
             }
-            // 150000~800000: green gradient (high visibility)
-            else if (price <= 800000)
+            // 100000~500000: green gradient (high visibility)
+            else if (price <= 500000)
             {
-                ratio = (float)(price - 150000) / (800000 - 150000f);
+                ratio = (float)(price - 100000) / (500000 - 100000f);
                 a = 255;
                 r = (byte)(180 - ratio * 80);
                 g = (byte)(180 + ratio * 40);
                 b = (byte)(180 - ratio * 100);
             }
-            // 800000~1000000: green¡úred gradient (high visibility)
+            // 500000~1000000: green¡úred gradient (high visibility)
             else
             {
-                ratio = (float)(price - 800000) / (1000000 - 800000f);
+                ratio = (float)(price - 500000) / (1000000 - 500000f);
                 a = 255;
                 r = (byte)(100 + ratio * 155);
                 g = (byte)(220 - ratio * 170);
