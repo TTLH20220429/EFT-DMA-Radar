@@ -8,12 +8,12 @@ namespace SDK
         public readonly partial struct GameWorld
 		{
 			public const uint BtrController = 0x20; // EFT.Vehicle.BtrController
-			public const uint LocationId = 0xB8; // string
-			public const uint LootList = 0x178; // System.Collections.Generic.List<IKillable>
-			public const uint RegisteredPlayers = 0x190; // System.Collections.Generic.List<IPlayer>
-			public const uint MainPlayer = 0x1E0; // EFT.Player
-			public const uint SynchronizableObjectLogicProcessor = 0x218; // EFT.SynchronizableObjects.SynchronizableObjectLogicProcessor
-			public const uint Grenades = 0x258; // DictionaryListHydra<int, Throwable>
+			public const uint LocationId = 0xC0; // string
+			public const uint LootList = 0x180; // System.Collections.Generic.List<IKillable>
+			public const uint RegisteredPlayers = 0x198; // System.Collections.Generic.List<IPlayer>
+			public const uint MainPlayer = 0x1E8; // EFT.Player
+			public const uint SynchronizableObjectLogicProcessor = 0x220; // EFT.SynchronizableObjects.SynchronizableObjectLogicProcessor
+			public const uint Grenades = 0x260; // DictionaryListHydra<int, Throwable>
 		}
 
         public readonly partial struct SynchronizableObject
@@ -58,13 +58,13 @@ namespace SDK
             public const uint MovementContext = 0x60; // EFT.MovementContext
             public const uint _playerBody = 0x190; // EFT.PlayerBody
             public const uint Physical = 0x8F0; // -.\uE399 <Physical> Physical
-            public const uint Corpse = 0x670; // EFT.Interactive.Corpse
-            public const uint Location = 0x860; // String
-            public const uint Profile = 0x8D8; // EFT.Profile
+            public const uint Corpse = 0x678; // EFT.Interactive.Corpse
+            public const uint Location = 0x868; // String
+            public const uint Profile = 0x8E0; // EFT.Profile
             public const uint ProceduralWeaponAnimation = 0x330; // EFT.Animations.ProceduralWeaponAnimation
             public const uint _inventoryController = 0x950; // EFT.PlayerInventoryController update
             public const uint _handsController = 0x958; // EFT.PlayerHands update
-            public const uint _playerLookRaycastTransform = 0x9E0; // UnityEngine.Transform
+            public const uint _playerLookRaycastTransform = 0x9E8; // UnityEngine.Transform
         }
 
         public readonly partial struct ObservedPlayerView
@@ -116,7 +116,7 @@ namespace SDK
         public readonly partial struct MovementContext
         {
             public const uint Player = 0x48; // EFT.Player
-            public const uint _rotation = 0xC4; // UnityEngine.Vector2
+            public const uint _rotation = 0xC8; // UnityEngine.Vector2
             public const uint PlantState = 0x78; // EFT.BaseMovementState <PlantState> PlantState
             public const uint CurrentState = 0x1F0; // EFT.BaseMovementState <CurrentState>k__BackingField
             public const uint _states = 0x480; // System.Collections.Generic.Dictionary<Byte, BaseMovementState> <_states> _states
