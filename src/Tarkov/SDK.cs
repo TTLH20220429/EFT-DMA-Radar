@@ -57,13 +57,13 @@ namespace SDK
         {
             public const uint MovementContext = 0x60; // EFT.MovementContext
             public const uint _playerBody = 0x190; // EFT.PlayerBody
-            public const uint Physical = 0x8F0; // -.\uE399 <Physical> Physical
+            public const uint Physical = 0x8F8; // -.\uE399 <Physical> Physical
             public const uint Corpse = 0x678; // EFT.Interactive.Corpse
             public const uint Location = 0x868; // String
             public const uint Profile = 0x8E0; // EFT.Profile
-            public const uint ProceduralWeaponAnimation = 0x330; // EFT.Animations.ProceduralWeaponAnimation
-            public const uint _inventoryController = 0x950; // EFT.PlayerInventoryController update
-            public const uint _handsController = 0x958; // EFT.PlayerHands update
+            public const uint ProceduralWeaponAnimation = 0x338; // EFT.Animations.ProceduralWeaponAnimation
+            public const uint _inventoryController = 0x958; // EFT.PlayerInventoryController update
+            public const uint _handsController = 0x960; // EFT.PlayerHands update
             public const uint _playerLookRaycastTransform = 0x9E8; // UnityEngine.Transform
         }
 
