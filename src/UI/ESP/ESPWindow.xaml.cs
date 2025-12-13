@@ -329,11 +329,24 @@ namespace LoneEftDmaRadar.UI.ESP
                             DrawGrenades(ctx, screenWidth, screenHeight);
                         }
 
+
+                        float distance = 1000f;
                         // Render players
                         foreach (var player in allPlayers)
                         {
-                            DrawPlayerESP(ctx, player, localPlayer, screenWidth, screenHeight);
+                            float userDistance = DrawPlayerESP(ctx, player, localPlayer, screenWidth, screenHeight);
+                            if (userDistance < distance) {
+                                distance = userDistance;
+                            }
                         }
+                        if (distance < 200f)
+                        {
+                            string tips = "×îµÍµÐÈË¾àÀë:" + $"{ distance: F0}m";
+                            RawRectangle textRect = ctx.MeasureText(tips, DxTextSize.Small);
+                            int textWidth = textRect.Right - textRect.Left;
+                            ctx.DrawText(tips, (screenWidth / 2f) - (textWidth / 2f), 20, new DxColor(255, 255, 255, 255), DxTextSize.Small);
+                        }
+
 
                         DrawDeviceAimbotTargetLine(ctx, screenWidth, screenHeight);
 
@@ -485,6 +498,7 @@ namespace LoneEftDmaRadar.UI.ESP
                          {
                              var corpseName = corpse.Player?.Name;
                              text = string.IsNullOrWhiteSpace(corpseName) ? corpse.Name : corpseName;
+                            if (text.Equals("Corpse")) continue;
                          }
                          else if (item is LootAirdrop)
                          {
@@ -603,17 +617,17 @@ namespace LoneEftDmaRadar.UI.ESP
         /// Renders player on ESP
         /// </summary>
         [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-        private void DrawPlayerESP(Dx9RenderContext ctx, AbstractPlayer player, LocalPlayer localPlayer, float screenWidth, float screenHeight)
+        private float DrawPlayerESP(Dx9RenderContext ctx, AbstractPlayer player, LocalPlayer localPlayer, float screenWidth, float screenHeight)
         {
             if (player is null || player == localPlayer || !player.IsAlive || !player.IsActive)
-                return;
+                return 1000f;
 
             // Validate player position is valid (not zero or NaN/Infinity)
             var playerPos = player.Position;
             if (playerPos == Vector3.Zero || 
                 float.IsNaN(playerPos.X) || float.IsNaN(playerPos.Y) || float.IsNaN(playerPos.Z) ||
                 float.IsInfinity(playerPos.X) || float.IsInfinity(playerPos.Y) || float.IsInfinity(playerPos.Z))
-                return;
+                return 1000f;
 
             // Check if this is AI or player
             bool isAI = player.Type is PlayerType.AIScav or PlayerType.AIRaider or PlayerType.AIBoss or PlayerType.PScav;
@@ -624,11 +638,11 @@ namespace LoneEftDmaRadar.UI.ESP
 
             // If maxDistance is 0, it means unlimited, otherwise check distance
             if (maxDistance > 0 && distance > maxDistance)
-                return;
+                return 1000f;
 
             // Fallback to old MaxDistance if the new settings aren't configured
             if (maxDistance == 0 && distance > App.Config.UI.MaxDistance)
-                return;
+                return 1000f;
 
             // Get Color
             var color = GetPlayerColorForRender(player);
@@ -697,6 +711,13 @@ namespace LoneEftDmaRadar.UI.ESP
             if (drawLabel)
             {
                 DrawPlayerLabel(ctx, player, distance, color, hasBox ? bbox : (RectangleF?)null, screenWidth, screenHeight, drawName, drawDistance, drawHealth, drawGroupId);
+            }
+            if (!isAI)
+            {
+                return distance;
+            }
+            else {
+                return 1000f;
             }
         }
 
