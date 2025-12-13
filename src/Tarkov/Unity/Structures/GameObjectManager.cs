@@ -27,7 +27,7 @@ namespace LoneEftDmaRadar.Tarkov.Unity.Structures
             {
                 try
                 {
-                    const string signature = "48 89 05 ?? ?? ?? ?? 48 83 C4 ?? C3 33 C9";
+                    const string signature = "48 8B 35 ? ? ? ? 48 85 F6 0F 84 ? ? ? ? 8B 46";
                     ulong gomSig = Memory.FindSignature(signature);
                     gomSig.ThrowIfInvalidVirtualAddress(nameof(gomSig));
                     int rva = Memory.ReadValueEnsure<int>(gomSig + 3);

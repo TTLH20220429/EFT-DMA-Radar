@@ -174,8 +174,7 @@ namespace LoneEftDmaRadar.Tarkov.GameWorld.Camera
             try
             {
                 DebugLogger.LogDebug("=== CameraManager Initialization ===");
-                var allCamerasAddr = Memory.UnityBase + UnitySDK.UnityOffsets.AllCameras;
-                var allCamerasPtr = Memory.ReadPtr(allCamerasAddr, false);
+                var allCamerasPtr = AllCameras.GetPtr(Memory.UnityBase);
                 if (allCamerasPtr == 0)
                 {
                     DebugLogger.LogDebug("⚠️ CRITICAL: AllCameras pointer is NULL!");
