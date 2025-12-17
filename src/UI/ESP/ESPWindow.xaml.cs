@@ -341,10 +341,11 @@ namespace LoneEftDmaRadar.UI.ESP
                         }
                         if (distance < 200f)
                         {
-                            string tips = "×îµÍµÐÈË¾àÀë:" + $"{ distance: F0}m";
+                            string tips = "Play Distance:" + $"{ distance: F0}m";
                             RawRectangle textRect = ctx.MeasureText(tips, DxTextSize.Small);
                             int textWidth = textRect.Right - textRect.Left;
-                            ctx.DrawText(tips, (screenWidth / 2f) - (textWidth / 2f), 20, new DxColor(255, 255, 255, 255), DxTextSize.Small);
+                            if (distance > 100f) ctx.DrawText(tips, (screenWidth / 2f) - (textWidth / 2f), screenHeight - 40, new DxColor(0, 255, 0, 1), DxTextSize.Small);
+                            else ctx.DrawText(tips, (screenWidth / 2f) - (textWidth / 2f), screenHeight - 40, new DxColor(255, 0, 0, 1), DxTextSize.Small);
                         }
 
 
@@ -499,7 +500,8 @@ namespace LoneEftDmaRadar.UI.ESP
                              var corpseName = corpse.Player?.Name;
                              text = string.IsNullOrWhiteSpace(corpseName) ? corpse.Name : corpseName;
                             if (text.Equals("Corpse")) continue;
-                         }
+                            if (text.Equals("Scav")) continue;
+                        }
                          else if (item is LootAirdrop)
                          {
                              text = "Airdrop";
@@ -515,6 +517,7 @@ namespace LoneEftDmaRadar.UI.ESP
                                      : $"{shortName} ({LoneEftDmaRadar.Misc.Utilities.FormatNumberKM(item.Price)})";
                              }
                          }
+                        text = text + $" {distance: F0}m";
                          ctx.DrawText(text, screen.X + 4, screen.Y + 4, textColor, DxTextSize.Small);
                     }
                 }
