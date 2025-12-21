@@ -342,10 +342,10 @@ namespace LoneEftDmaRadar.UI.ESP
                         if (distance < 200f)
                         {
                             string tips = "Play Distance:" + $"{ distance: F0}m";
-                            RawRectangle textRect = ctx.MeasureText(tips, DxTextSize.Small);
+                            RawRectangle textRect = ctx.MeasureText(tips, DxTextSize.Medium);
                             int textWidth = textRect.Right - textRect.Left;
-                            if (distance > 100f) ctx.DrawText(tips, (screenWidth / 2f) - (textWidth / 2f), screenHeight - 40, new DxColor(0, 255, 0, 1), DxTextSize.Small);
-                            else ctx.DrawText(tips, (screenWidth / 2f) - (textWidth / 2f), screenHeight - 40, new DxColor(255, 0, 0, 1), DxTextSize.Small);
+                            if (distance > 100f) ctx.DrawText(tips, (screenWidth / 2f) - (textWidth / 2f), screenHeight - 40, new DxColor(0, 0, 255, 255), DxTextSize.Medium);
+                            else ctx.DrawText(tips, (screenWidth / 2f) - (textWidth / 2f), screenHeight - 40, new DxColor(0, 255, 0, 255), DxTextSize.Medium);
                         }
 
 
@@ -1091,51 +1091,82 @@ namespace LoneEftDmaRadar.UI.ESP
         private DxColor GetGrenadeColorForRender() => ToColor(ColorFromHex(App.Config.UI.EspColorGrenade));
         private DxColor GetContainerColorForRender() => ToColor(ColorFromHex(App.Config.UI.EspColorContainers));
         private DxColor GetCrosshairColor() => ToColor(ColorFromHex(App.Config.UI.EspColorCrosshair));
-        private byte ClampByte(byte value) => value > 255 ? (byte)255 : (value < 0 ? (byte)0 : value);
-        private DxColor GetLootColorForPrice(int price) {
-            // >1M: pure red
-            if (price > 1000000) return new RawColorBGRA { B = 0, G = 0, R = 255, A = 255 };
-            // ¡Ü0: dark gray (low visibility)
-            if (price <= 0) return new RawColorBGRA { B = 100, G = 100, R = 100, A = 64 };
 
+
+        private const int PriceThreshold_10W = 100000;
+        private const int PriceThreshold_50W = 500000;
+        private const int PriceThreshold_100W = 1000000;
+
+
+        private const byte GrayBase = 100;
+        private const byte GrayMax = 180;
+        private const byte AlphaLow = 64;
+        private const byte AlphaHigh = 255;
+
+        private DxColor GetLootColorForPrice(int price)
+        {
+            if (price > PriceThreshold_100W)
+            {
+                return CreateBgraColor(0, 0, 255, 255);
+            }
+
+            if (price <= 0)
+            {
+                return CreateBgraColor(100, 100, 100, 64);
+            }
+
+            byte b = 0, g = 0, r = 0, a = 0;
             float ratio = 0f;
-            byte a = 64, r = 100, g = 100, b = 100;
 
-            // 0~100000: gray gradient (low visibility)
-            if (price <= 100000)
+            if (price <= PriceThreshold_10W)
             {
-                ratio = (float)price / 100000f;
-                a = (byte)(64 + ratio * 64);
-                r = g = b = (byte)(100 + ratio * 80);
+                ratio = (float)price / PriceThreshold_10W;
+
+                a = ClampByte((int)(AlphaLow + ratio * AlphaLow));
+                byte gray = ClampByte((int)(GrayBase + ratio * (GrayMax - GrayBase)));
+                b = g = r = gray;
             }
-            // 100000~500000: green gradient (high visibility)
-            else if (price <= 500000)
+            else if (price <= PriceThreshold_50W)
             {
-                ratio = (float)(price - 100000) / (500000 - 100000f);
-                a = 255;
-                r = (byte)(180 - ratio * 80);
-                g = (byte)(180 + ratio * 40);
-                b = (byte)(180 - ratio * 100);
+                ratio = (float)(price - PriceThreshold_10W) / (PriceThreshold_50W - PriceThreshold_10W);
+
+                a = AlphaHigh;
+                g = ClampByte((int)(220 - ratio * 120));
+                r = ClampByte((int)(80 - ratio * 60));
+                b = ClampByte((int)(80 - ratio * 80));
             }
-            // 500000~1000000: green¡úred gradient (high visibility)
             else
             {
-                ratio = (float)(price - 500000) / (1000000 - 500000f);
-                a = 255;
-                r = (byte)(100 + ratio * 155);
-                g = (byte)(220 - ratio * 170);
-                b = (byte)(80 - ratio * 80);
+                ratio = (float)(price - PriceThreshold_50W) / (PriceThreshold_100W - PriceThreshold_50W);
+
+                a = AlphaHigh;
+                r = ClampByte((int)(100 + ratio * 155));
+                g = ClampByte((int)(100 - ratio * 100));
+                b = 0;
+                if (ratio > 0.2f && ratio < 0.6f)
+                {
+                    g = ClampByte((int)(40 - (ratio - 0.2f) * 40));
+                }
             }
 
-            // Clamp to 0-255
-            a = ClampByte(a);
-            r = ClampByte(r);
-            g = ClampByte(g);
-            b = ClampByte(b);
-
-            return new RawColorBGRA { B = b, G = g, R = r, A = a };
+            return CreateBgraColor(b, g, r, a);
         }
 
+        private DxColor CreateBgraColor(byte b, byte g, byte r, byte a)
+        {
+            return new RawColorBGRA
+            {
+                B = b,
+                G = g,
+                R = r,
+                A = a
+            };
+        }
+        private byte ClampByte(int value)
+        {
+            int clamped = Math.Clamp(value, 0, 255);
+            return (byte)clamped;
+        }
 
         private static SKColor ColorFromHex(string hex)
         {
